@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Semester Closure Portal — OoA</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0a2558;--navy2:#143572;--teal:#0f6e74;--teal-lt:#e0f4f5;
+  --amber:#c97820;--amber-lt:#fef3e2;--amber2:#f5a623;
+  --gold:#f2a900;
+  --red:#b83030;--red-lt:#fdeaea;
+  --green:#1e6b3c;--green-lt:#e8f7ee;
+  --ink:#111827;--ink2:#374151;--ink3:#6b7280;
+  --bg:#ffffff;--bg2:#ffffff;--bg3:#f0f3fb;
+  --border:#dde3f0;--border2:#c0bab0;
+  --r:12px;--r2:8px;
+  --sh:0 4px 20px rgba(0,0,0,.05);
+  --sh2:0 12px 48px rgba(0,0,0,.08)
+}
+html{scroll-behavior:smooth}
+body{
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(rgba(10, 37, 88, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 37, 88, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* ── Header ── */
+.site-header { background: #ffffff; position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 24px rgba(0, 0, 0, .08) }
+.header-inner { display: flex; align-items: center; justify-content: space-between; max-width: 980px; margin: 0 auto; padding: 0 28px; height: 68px }
+.logo-area { display: flex; align-items: center; gap: 14px }
+.logo-text .l1 { font-size: 16px; font-weight: 700; color: var(--navy); line-height: 1.1 }
+.logo-text .l2 { font-size: 11px; color: var(--navy); font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-top: 2px }
+.hdr-user { display: flex; align-items: center; gap: 12px; margin-left: 20px; padding-left: 20px; border-left: 1px solid #dde3f0; }
+.user-greeting { font-size: 12.5px; font-weight: 600; color: var(--navy); }
+
+/* ══ PROGRESS ══ */
+.prog-bar{background:#fafbff;border-top:1px solid #edf0f8}
+.prog-inner{max-width:980px;margin:0 auto;display:flex;padding:0 28px}
+.ps{flex:1;padding:10px 4px;font-size:11px;color:var(--ink3);text-align:center;cursor:pointer;transition:all .2s;border-bottom:3px solid transparent;letter-spacing:.03em;user-select:none;font-weight:500;}
+.ps:hover{color:var(--navy)}
+.ps.active{color:var(--navy);border-bottom-color:var(--navy);font-weight:700}
+.ps.done{color:#1a428a}
+.ps.done::after{content:' ✓'; color: var(--green);}
+
+/* ══ LAYOUT ══ */
+.wrap{max-width:980px;margin:0 auto;padding:36px 28px 100px}
+.pg{display:none}
+.pg.on{display:block;animation:up .28s ease}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ PAGE HEADING ══ */
+.ph{margin-bottom:32px}
+.ph .badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:10.5px;font-weight:800;padding:3px 12px;border-radius:99px;margin-bottom:12px;letter-spacing:.08em;text-transform:uppercase}
+.ph h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--navy);line-height:1.2;margin-bottom:8px}
+.ph p{color:var(--ink3);font-size:13.5px;line-height:1.65}
+
+/* ══ CARDS ══ */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:26px;margin-bottom:22px;box-shadow:var(--sh)}
+.card-hdr{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--bg3)}
+.card-hdr-bar{width:4px;height:18px;background:var(--teal);border-radius:2px;flex-shrink:0}
+.card-hdr-bar.amber{background:var(--amber)}
+.card-hdr-bar.navy{background:var(--navy)}
+.card-title{font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.07em}
+
+/* ══ FIELDS ══ */
+.fg{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:16px}
+.fg.c1{grid-template-columns:1fr}
+.fg.c2{grid-template-columns:1fr 1fr}
+.fg.c3{grid-template-columns:repeat(3,1fr)}
+.f{display:flex;flex-direction:column;gap:5px}
+.f label{font-size:11.5px;font-weight:700;color:var(--navy);letter-spacing:.04em;text-transform:uppercase;}
+.f label .req{color:var(--amber);margin-left:2px}
+.f input,.f select,.f textarea{padding:10px 14px;border:2px solid var(--border);border-radius:var(--r2);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;color:var(--ink);background:#fafbff;transition:.15s;outline:none;width:100%}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--navy);background:#fff;box-shadow:0 0 0 4px rgba(26, 74, 154, .08)}
+.f textarea{min-height:88px;resize:vertical;line-height:1.55}
+.f .hint{font-size:11px;color:var(--ink3);margin-top:2px;line-height:1.4}
+
+/* ══ SNAPSHOT ══ */
+.snap{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:6px}
+.snap-box{background:linear-gradient(135deg, #f0f4ff 0%, #e8eeff 100%);border:2px solid #d0d8f0;border-radius:var(--r);padding:16px 12px;text-align:center;transition:.15s}
+.snap-box:focus-within{border-color:var(--navy);background:#fff;box-shadow:0 0 0 4px rgba(10, 37, 88, .08)}
+.snap-box label{display:block;font-size:10.5px;font-weight:700;color:var(--navy);margin-bottom:10px;line-height:1.35;text-transform:uppercase;letter-spacing:.04em}
+.snap-box input{width:100%;border:none;background:transparent;text-align:center;font-size:26px;font-weight:800;color:var(--navy);font-family:'Playfair Display',serif;outline:none}
+
+/* ══ CHECKLIST ══ */
+.chk-sec-title{font-size:11px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.09em;padding:12px 0 6px;border-bottom:2px solid var(--bg3);margin:18px 0 2px;display:flex;align-items:center;gap:8px}
+.chk-sec-title::before{content:'';display:block;width:18px;height:3px;background:var(--gold);border-radius:2px}
+.chk-row{display:grid;grid-template-columns:26px 1fr 88px 200px;align-items:start;gap:10px;padding:9px 8px;border-bottom:1px solid #f0f3fb;transition:.1s;border-radius:var(--r2)}
+.chk-row:hover{background:#f7f9ff}
+.chk-row.conditional{background:var(--amber-lt);padding-left:28px;grid-template-columns:26px 1fr 88px 200px}
+.chk-num{font-size:11px;color:var(--ink3);font-weight:700;padding-top:2px;text-align:center}
+.chk-text{font-size:13.5px;line-height:1.45;padding-top:1px;color:var(--ink)}
+.chk-sub{font-size:11.5px;color:var(--ink3);margin-top:3px;font-style:italic}
+.chk-sel{padding:6px 8px;border:2px solid var(--border);border-radius:var(--r2);font-size:12px;font-weight:600;cursor:pointer;outline:none;transition:.15s;font-family:'Plus Jakarta Sans',sans-serif;background:#fafbff;width:100%}
+.chk-sel.yes{border-color:#1a7a4a;color:#1a7a4a;background:#edfaf3}
+.chk-sel.no{border-color:#c0392b;color:#c0392b;background:#fdf0f0}
+.chk-sel.na{border-color:#aaa;color:#888;background:#f5f5f5}
+.chk-link{font-size:12px;padding:6px 10px;border:2px solid var(--border);border-radius:var(--r2);outline:none;font-family:'Plus Jakarta Sans',sans-serif;transition:.15s;background:#fafbff;width:100%}
+.chk-link:focus{border-color:var(--navy);background:#fff}
+.chk-textarea{font-size:12px;padding:6px 10px;border:2px solid var(--border);border-radius:var(--r2);outline:none;font-family:'Plus Jakarta Sans',sans-serif;transition:.15s;background:#fafbff;width:100%;resize:none;min-height:60px}
+.chk-textarea:focus{border-color:var(--navy);background:#fff}
+
+/* ══ HOD NARRATIVE ══ */
+.hod-item{margin-bottom:18px;border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.hod-item-hdr{background:var(--navy);color:#fff;padding:10px 14px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px}
+.hod-item-num{background:var(--gold);color:var(--navy);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.hod-item-body{padding:14px}
+.hod-item-body textarea{width:100%;border:2px solid var(--border);border-radius:var(--r2);padding:10px 12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;color:var(--ink);background:#fafbff;min-height:100px;resize:vertical;outline:none;line-height:1.6;transition:.15s}
+.hod-item-body textarea:focus{border-color:var(--navy);background:#fff}
+
+/* ══ DYN TABLE ══ */
+.tbl-wrap{overflow-x:auto;margin-bottom:10px;border-radius:var(--r2);border:1px solid var(--border)}
+.dtbl{width:100%;border-collapse:collapse;font-size:13px;min-width:580px}
+.dtbl thead tr{background:var(--navy)}
+.dtbl thead th{padding:11px 10px;text-align:left;font-weight:700;font-size:11px;color:#fff;letter-spacing:.05em;white-space:nowrap}
+.dtbl tbody tr{border-bottom:1px solid #edf0f8;transition:.1s}
+.dtbl tbody tr:hover{background:#f5f8ff}
+.dtbl td{padding:7px 8px;vertical-align:middle}
+.dtbl td input,.dtbl td select{width:100%;border:1.5px solid transparent;background:transparent;padding:6px 8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;border-radius:5px;transition:.12s}
+.dtbl td input:focus,.dtbl td select:focus{border-color:var(--navy);background:#fff;box-shadow:0 0 0 3px rgba(26,74,154,.08)}
+.del-btn{background:none;border:none;cursor:pointer;color:#c0cce0;font-size:18px;padding:4px 6px;border-radius:4px;transition:.12s;line-height:1}
+.del-btn:hover{color:var(--red);background:#fff0f0}
+.add-row{width:100%;border:2px dashed #b0bee8;border-radius:var(--r2);padding:10px;color:var(--navy2);font-size:13px;font-weight:600;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s;margin-top:8px;font-family:'Plus Jakarta Sans',sans-serif}
+.add-row:hover{background:#f0f4ff;border-color:var(--navy);color:var(--navy)}
+
+/* ══ NAV ══ */
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:32px;padding-top:22px;border-top:2px solid #e8ecf5}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:var(--r2);font-size:14px;font-weight:700;cursor:pointer;border:2px solid transparent;transition:.15s;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:.01em}
+.btn-ghost{border-color:#c8d2e8;background:transparent;color:var(--ink2)}
+.btn-ghost:hover{background:var(--bg3);border-color:var(--navy)}
+.btn-primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn-primary:hover{background:var(--navy2);border-color:var(--navy2)}
+.btn-gold{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.btn-gold:hover{background:#e09b00;border-color:#e09b00}
+
+/* ══ DASH VIEW ══ */
+.dash-wrap { max-width: 980px; margin: 0 auto; padding: 36px 28px 100px; }
+.dash-card-sub { background: #fff; border: 1px solid #dde3f0; border-radius: var(--r); padding: 20px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+.dash-card-sub:hover { border-color: var(--navy2); box-shadow: var(--sh); }
+.dc-left { display: flex; flex-direction: column; gap: 4px; }
+.dc-title { font-size: 15px; font-weight: 700; color: var(--navy); }
+.dc-sub { font-size: 13px; color: var(--ink3); }
+
+/* ══ SUCCESS ══ */
+.success{display:none;text-align:center;padding:64px 20px}
+.success.on{display:block;animation:up .4s ease}
+.s-icon{font-size:72px;margin-bottom:16px;animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(.4)}70%{transform:scale(1.1)}100%{transform:scale(1)}}
+.s-title{font-family:'Playfair Display',serif;font-size:32px;margin-bottom:10px;color:var(--navy)}
+.s-sub{color:var(--ink2);font-size:15px;max-width:520px;margin:0 auto 28px;line-height:1.65}
+.sub-log{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin:24px 0;text-align:left}
+.sub-log h3{font-size:14px;font-weight:600;margin-bottom:14px;color:var(--navy)}
+.sub-entry{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--bg3);font-size:13px}
+.sub-entry:last-child{border-bottom:none}
+.se-dept{font-weight:600}
+.se-meta{color:var(--ink3);font-size:12px}
+
+/* ══ TOAST ══ */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--navy);color:#fff;padding:12px 26px;border-radius:var(--r);font-size:13.5px;opacity:0;transition:all .3s;pointer-events:none;z-index:999;box-shadow:var(--sh2);border-left:4px solid var(--gold)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ══ REVIEW ══ */
+.rev-block{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px;box-shadow:var(--sh)}
+.rev-hdr{background:var(--navy);color:#fff;padding:12px 18px;font-size:12px;font-weight:700;display:flex;justify-content:space-between;align-items:center;text-transform:uppercase;letter-spacing:.04em}
+.rev-badge{background:var(--gold);color:var(--navy);padding:2px 12px;border-radius:99px;font-size:11px;font-weight:800}
+.rev-body{padding:16px 18px;font-size:13.5px;line-height:1.85}
+.rev-row{display:flex;gap:10px;align-items:baseline;margin-bottom:2px}
+.rev-lbl{color:var(--ink3);font-size:12px;min-width:140px;flex-shrink:0;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.rev-val{color:var(--ink);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip{background:#f0f4ff;border:1.5px solid #c8d4f0;border-radius:var(--r2);padding:6px 14px;font-size:12.5px;color:var(--navy)}
+.chip b{font-weight:800}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700}
+.p-yes{background:#e0f5ea;color:#0f5a2a}
+.p-no{background:#fde8e8;color:#7a1a1a}
+.p-na{background:#f5f5f5;color:#888}
+.p-blank{background:#eee;color:#666}
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-area">
+      <div class="logo-text">
+        <div class="l1">Semester Closure Portal</div>
+        <div class="l2">Office of Academics — OoA</div>
+      </div>
+    </div>
+    <div class="hdr-right" style="display: flex; align-items: center;">
+      <div class="hdr-user">
+        <div class="user-greeting">Welcome, {{ user.name }}</div>
+        <a href="/" class="btn btn-ghost" style="padding: 6px 12px; font-size: 11px; text-decoration: none;">Dashboard</a>
+      </div>
+    </div>
+  </div>
+  <div class="prog-bar" id="mainProgBar" style="display: none;">
+    <div class="prog-inner" id="progBar">
+      <div class="ps active" onclick="goTo(0)">1. Identity</div>
+      <div class="ps" onclick="goTo(1)">2. Faculty Closure</div>
+      <div class="ps" onclick="goTo(2)">3. Faculty Summary</div>
+      <div class="ps" onclick="goTo(3)">4. HOD Report</div>
+      <div class="ps" onclick="goTo(4)">5. Review & Submit</div>
+    </div>
+  </div>
+</header>
+
+<div class="dash-wrap" id="dashView">
+  <div class="ph" style="display: flex; justify-content: space-between; align-items: flex-end;">
+    <div>
+      <h2>Your Closure Submissions</h2>
+      <p>Manage your past closure forms or start a new one.</p>
+    </div>
+    <button class="btn btn-primary" onclick="startNewForm()">＋ Start New Submission</button>
+  </div>
+  <div id="dashList">
+    <div style="text-align: center; color: var(--ink3); padding: 40px;">Loading submissions...</div>
+  </div>
+</div>
+
+<div class="wrap" id="formView" style="display:none;">
+
+<!-- ══════════ PAGE 0: IDENTITY ══════════ -->
+<div class="pg on" id="pg0">
+  <div class="ph">
+    <span class="badge">Step 1 of 5</span>
+    <h2>Department Identity</h2>
+    <p>Fill once — this appears across all sections of the closure report. Fields marked <span style="color:var(--amber)">*</span> are mandatory.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="card-hdr-bar"></div><span class="card-title">Campus & Department</span></div>
+    <div class="fg c2">
+      <div class="f"><label>Campus <span class="req">*</span></label>
+        <select id="id_campus"><option value="">— Select —</option><option>Bangalore</option><option>Kochi</option></select></div>
+      <div class="f"><label>Department Name <span class="req">*</span></label>
+        <select id="id_dept">
+          <option value="">— Select department —</option>
+          {% for d in departments %}<option>{{ d }}</option>{% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="fg c2">
+      <div class="f"><label>Program(s) <span class="req">*</span></label>
+        <input type="text" id="id_programs" placeholder="e.g. B.Tech CSE, M.Tech AI"></div>
+      <div class="f"><label>HOD Name <span class="req">*</span></label>
+        <input type="text" id="id_hod" placeholder="Dr. / Prof. Full Name" value="{{ user.name }}"></div>
+    </div>
+    <div class="fg c3">
+      <div class="f"><label>HOD Email <span class="req">*</span></label>
+        <input type="email" id="id_email" placeholder="hod@ooa.edu.in" value="{{ user.email }}"></div>
+      <div class="f"><label>Semester</label>
+        <select id="id_sem"><option value="">— Select —</option><option selected>Odd 2025-26</option><option>Even 2025-26</option><option>Odd 2026-27</option></select></div>
+      <div class="f"><label>Submission Date</label>
+        <input type="date" id="id_date"></div>
+    </div>
+  </div>
+
+  <div class="nav"><span></span>
+    <button class="btn btn-primary" onclick="goTo(1)">Next: Faculty Closure Checklist →</button>
+  </div>
+</div>
+
+<!-- ══════════ PAGE 1: FACULTY CHECKLIST ══════════ -->
+<div class="pg" id="pg1">
+  <div class="ph">
+    <span class="badge">Step 2 of 5</span>
+    <h2>Faculty Closure Checklist</h2>
+    <p>Each faculty fills one checklist per course. Use the tabs below if you are submitting for multiple courses. HOD: collect from all faculty, then compile in Step 3.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="card-hdr-bar amber"></div><span class="card-title">Course & Faculty Details</span></div>
+    <div class="fg c3">
+      <div class="f"><label>Faculty Name <span class="req">*</span></label><input type="text" id="fc_faculty" placeholder="Full name"></div>
+      <div class="f"><label>Course Name <span class="req">*</span></label><input type="text" id="fc_course" placeholder="Course name"></div>
+      <div class="f"><label>Course Code</label><input type="text" id="fc_code" placeholder="e.g. CS401"></div>
+    </div>
+    <div class="fg c3">
+      <div class="f"><label>Specialization</label><input type="text" id="fc_spec" placeholder="Specialization"></div>
+      <div class="f"><label>Semester</label><input type="text" id="fc_csem" placeholder="e.g. 5th Sem"></div>
+      <div class="f"><label>Total Students</label><input type="number" id="fc_students" min="0" placeholder="0"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="card-hdr-bar"></div><span class="card-title">Semester Closure Checklist — 26 Items</span></div>
+    <p style="font-size:12px;color:var(--ink3);margin-bottom:12px">Select status for each item. For conditional items (shaded), fill the follow-up field that appears.</p>
+    <div id="fcChkBody"></div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="goTo(0)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(2)">Next: Faculty Summary →</button>
+  </div>
+</div>
+
+<!-- ══════════ PAGE 2: FACULTY SUMMARY (HOD compiles) ══════════ -->
+<div class="pg" id="pg2">
+  <div class="ph">
+    <span class="badge">Step 3 of 5</span>
+    <h2>Faculty Submission Summary</h2>
+    <p>HOD: Add one row per faculty-course. This becomes the consolidated faculty status table in the report.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="card-hdr-bar"></div><span class="card-title">Faculty × Course Compilation</span></div>
+    <div class="tbl-wrap">
+      <table class="dtbl" id="facTable">
+        <thead><tr>
+          <th style="width:26px">#</th>
+          <th style="min-width:130px">Faculty Name</th>
+          <th style="min-width:150px">Course Name</th>
+          <th style="width:76px">Code</th>
+          <th style="width:76px">Checklist<br>Submitted?</th>
+          <th style="width:76px">Syllabus<br>Complete?</th>
+          <th style="width:76px">CA Marks<br>on ERP?</th>
+          <th style="width:76px">CO-PO<br>Mapping?</th>
+          <th style="width:76px">Course End<br>Survey?</th>
+          <th style="min-width:110px">HOD Remarks</th>
+          <th style="width:26px"></th>
+        </tr></thead>
+        <tbody id="facBody"></tbody>
+      </table>
+    </div>
+    <button class="add-row" onclick="addFacRow()">+ Add Faculty-Course Row</button>
+  </div>
+
+  <!-- Department Numbers -->
+  <div class="card">
+    <div class="card-hdr"><div class="card-hdr-bar amber"></div><span class="card-title">Department Snapshot — Closure Numbers</span></div>
+    <div class="snap">
+      <div class="snap-box"><label>Total Faculty in Dept</label><input type="number" id="sn_fac" min="0" placeholder="0"></div>
+      <div class="snap-box"><label>Faculty Checklists Submitted</label><input type="number" id="sn_sub" min="0" placeholder="0"></div>
+      <div class="snap-box"><label>Total Courses this Sem</label><input type="number" id="sn_courses" min="0" placeholder="0"></div>
+      <div class="snap-box"><label>Courses with Full Syllabus Completion</label><input type="number" id="sn_syl" min="0" placeholder="0"></div>
+      <div class="snap-box"><label>Total Students in Dept</label><input type="number" id="sn_stud" min="0" placeholder="0"></div>
+      <div class="snap-box"><label>Students with Backlogs</label><input type="number" id="sn_back" min="0" placeholder="0"></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="goTo(1)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(3)">Next: HOD Report →</button>
+  </div>
+</div>
+
+<!-- ══════════ PAGE 3: HOD REPORT ══════════ -->
+<div class="pg" id="pg3">
+  <div class="ph">
+    <span class="badge">Step 4 of 5</span>
+    <h2>HOD Semester Closure Report</h2>
+    <p>HOD fills each section with a brief narrative. These become the 14 verticals in the HOD closing report submitted to Academic Office.</p>
+  </div>
+
+  <div id="hodReportBody"></div>
+
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="goTo(2)">← Back</button>
+    <button class="btn btn-primary" onclick="buildReview();goTo(4)">Review & Submit →</button>
+  </div>
+</div>
+
+<!-- ══════════ PAGE 4: REVIEW ══════════ -->
+<div class="pg" id="pg4">
+  <div class="ph">
+    <span class="badge">Step 5 of 5</span>
+    <h2>Review & Submit</h2>
+    <p>Check all details. On submit, your browser saves the submission and notifies the Academic Office.</p>
+  </div>
+  <div id="reviewContent"></div>
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="goTo(3)">← Back & Edit</button>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="submitForm()">✓ Submit to Academic Office</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SUCCESS ══════════ -->
+<div class="success" id="successScreen">
+  <div class="s-icon">🎉</div>
+  <h2 class="s-title">Submitted Successfully!</h2>
+  <p class="s-sub">The closure report has been recorded. The Academic Office will review your submission.</p>
+  <div class="sub-log">
+    <h3>Submissions This Session</h3>
+    <div id="subList"></div>
+  </div>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <button class="btn btn-primary" onclick="window.location.reload()">Return to Dashboard</button>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════
+let submissionsCache = [];
+let currentSubmissionId = null;
+
+const fcChecklist = [
+  {sec:"A. ERP & Records",items:[
+    {id:"1",text:"Attendance Entry in ERP with Analysis Report",link:true},
+    {id:"2",text:"Continuous Assessment Marks Entry in ERP",link:true},
+    {id:"3",text:"CA components mapped to COs / Bloom's Level",link:true},
+    {id:"4",text:"Consolidated CA list available",link:true},
+    {id:"5",text:"Assignment record maintained",link:true},
+  ]},
+  {sec:"B. Syllabus & Teaching",items:[
+    {id:"6",text:"Compliance to Teaching-Learning-Evaluation Plan (TLEP)",link:true},
+    {id:"7",text:"Syllabus Completion",link:false,yesno:true},
+    {id:"8",text:"If No — Reason for non-completion",conditional:"7",condVal:"No",textarea:true},
+    {id:"9",text:"Innovative teaching methods adapted",link:false,yesno:true},
+    {id:"10",text:"If Yes — Briefly mention the method(s)",conditional:"9",condVal:"Yes",textarea:true},
+  ]},
+  {sec:"C. Learning Materials",items:[
+    {id:"11",text:"Availability of Lecture Notes / PPTs",link:true},
+    {id:"12",text:"Sample Lecture Notes / PPT uploaded",link:true},
+    {id:"13",text:"Experiential Learning record with rubrics for Evaluation",link:true},
+    {id:"14",text:"Sample Experiential Learning activity with rubrics uploaded",link:true},
+  ]},
+  {sec:"D. Evaluation",items:[
+    {id:"15",text:"Innovative Evaluation Strategy used",link:false,yesno:true},
+    {id:"16",text:"If Yes — Briefly describe the strategy",conditional:"15",condVal:"Yes",textarea:true},
+    {id:"17",text:"CO-PO (and PSO, if applicable) mapping available",link:true},
+    {id:"18",text:"Course End Survey conducted",link:true},
+  ]},
+  {sec:"E. Student Support",items:[
+    {id:"19",text:"Slow learner / advance learner list prepared",link:true},
+    {id:"20",text:"Record of remedial classes maintained",link:true},
+    {id:"21",text:"Record of Extra lectures for Guided Self Study (GSS)",link:true},
+    {id:"22",text:"Lab Manuals available (wherever lab is part of CA)",link:true},
+    {id:"23",text:"Result analysis with backlog list (course-wise)",link:true},
+  ]},
+  {sec:"F. Mentoring & Projects",items:[
+    {id:"24",text:"Mentoring Report prepared",link:true},
+    {id:"25",text:"TD-PCL Report (batches, students, faculty, project title, progress)",link:true},
+    {id:"26",text:"Internship Report — Groups",link:true},
+  ]},
+];
+
+const hodReport = [
+  {id:"1",title:"Overview of the Semester",hint:"Brief narrative of how the semester progressed overall.",simple:true},
+  {id:"2",title:"Objectives Planned — Were They Achieved?",hint:"State the key objectives set at the beginning and whether each was met.",simple:true},
+  {id:"3",title:"Adherence to Academic Calendar",hint:"Highlight any deviations from the calendar and corrective actions taken.",simple:true},
+  {id:"4",title:"Course Completion Summary",hint:"Summary of courses offered and completed. Flag any incomplete ones with reasons.",simple:true},
+  {id:"5",title:"Student Performance Overview",hint:"Average grades, top performers, notable academic achievements.",simple:true},
+  {id:"6",title:"Faculty Contributions",hint:"Research published, conferences presented, awards received this semester.",simple:true},
+  {id:"7",title:"Conferences, Workshops, Seminars & Guest Lectures",hint:"List all events conducted with dates and participants.",simple:true},
+  {id:"8",title:"Department Events & Extra-curricular Activities",hint:"Overview of departmental events, fests, competitions etc.",simple:true},
+  {id:"9",title:"Collaborations & Partnerships",hint:"New MoUs or collaborations with Industry / Academia signed this semester.",simple:true},
+  {id:"10",title:"Academic Audits",hint:"Confirm that academic audits were conducted for all courses. Note any findings.",simple:true},
+  {id:"11",title:"CA Components — Entry & Approval",hint:"Confirm CA marks are entered and approved in ERP for all courses.",simple:true},
+  {id:"12",title:"COLAB Files Review",hint:"Status of COLAB file review for this semester.",simple:true},
+  {id:"13",title:"COLAB — Previous Closing, Current Opening & Attainment",hint:"Confirm COLAB linkage: previous closing report reviewed, current opening report ready, CO attainment computed.",simple:true},
+  {id:"14",title:"HOD Additional Observations / Action Items for Next Semester",hint:"Any other noteworthy points or action items to carry forward.",simple:true},
+];
+
+// ════════════════════════════════════════
+// INIT & DASHBOARD
+// ════════════════════════════════════════
+function loadDashboard() {
+  fetch('/api/my-submissions?type=closure').then(r => r.json()).then(res => {
+    const list = document.getElementById('dashList');
+    if (!res.ok || !res.submissions || !res.submissions.length) {
+      list.innerHTML = '<div style="text-align:center; padding: 40px; background: #fff; border-radius: 12px; border: 1px dashed #c8d2e8; color: var(--ink3);">No closure submissions found. Start a new one!</div>';
+      return;
+    }
+    submissionsCache = res.submissions;
+    list.innerHTML = res.submissions.map(s => {
+      const dt = new Date(s.timestamp).toLocaleDateString();
+      const isLocked = s.edit_count >= 2 && (!s.edit_request || s.edit_request.status !== 'approved');
+      const isPending = s.edit_request && s.edit_request.status === 'pending';
+
+      let rightAction = '';
+      if (isLocked) {
+        if (isPending) rightAction = `<button class="btn btn-ghost" disabled>Pending Admin</button>`;
+        else rightAction = `<button class="btn btn-ghost" onclick="requestEdit('${s._id}')">Request Edit</button>`;
+      } else {
+        rightAction = `<button class="btn btn-gold" onclick="editSubmission('${s._id}')">Edit</button>`;
+      }
+
+      return `<div class="dash-card-sub">
+        <div class="dc-left">
+          <div class="dc-title">${s.identity?.dept || 'Draft Submission'}</div>
+          <div class="dc-sub">Submitted on ${dt} · ${s.identity?.sem || ''} ${s.edit_count > 0 ? `(Edits: ${s.edit_count})` : ''}</div>
+        </div>
+        <div class="dc-right">
+          ${rightAction}
+        </div>
+      </div>`;
+    }).join('');
+  });
+}
+
+loadDashboard();
+document.getElementById('id_date').value=new Date().toISOString().split('T')[0];
+buildFcChecklist();
+buildHodReport();
+addFacRow(); addFacRow(); addFacRow();
+// Hide conditional rows initially
+setTimeout(() => document.querySelectorAll('.conditional').forEach(r=>r.style.display='none'), 100);
+
+function requestEdit(id) {
+  const comment = prompt("You have reached the maximum edits for this submission.\nPlease enter a reason to request edit access from the Admin:");
+  if (comment === null) return;
+  fetch('/api/request-edit/' + id, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ comment })
+  }).then(r => r.json()).then(res => {
+    if (res.ok) { showToast('Request sent to admin'); loadDashboard(); } 
+    else showToast('Failed to send request');
+  });
+}
+
+function startNewForm() {
+  document.getElementById('dashView').style.display = 'none';
+  document.getElementById('formView').style.display = 'block';
+  document.getElementById('mainProgBar').style.display = 'flex';
+  currentSubmissionId = null;
+}
+
+function editSubmission(id) {
+  const d = submissionsCache.find(x => x._id === id);
+  if (!d) return;
+  currentSubmissionId = id;
+
+  const setv = (elid, val) => { const e = document.getElementById(elid); if (e && val) e.value = val; };
+  
+  if (d.identity) {
+    setv('id_campus', d.identity.campus);
+    setv('id_dept', d.identity.dept);
+    setv('id_programs', d.identity.programs);
+    setv('id_hod', d.identity.hod);
+    setv('id_email', d.identity.email);
+    setv('id_sem', d.identity.sem);
+    setv('id_date', d.identity.date);
+  }
+  if (d.facultyCourse) {
+    setv('fc_faculty', d.facultyCourse.name);
+    setv('fc_course', d.facultyCourse.course);
+    setv('fc_code', d.facultyCourse.code);
+    setv('fc_spec', d.facultyCourse.spec);
+    setv('fc_csem', d.facultyCourse.csem);
+    setv('fc_students', d.facultyCourse.students);
+  }
+  if (d.snapshot) {
+    setv('sn_fac', d.snapshot.faculty);
+    setv('sn_sub', d.snapshot.submitted);
+    setv('sn_courses', d.snapshot.courses);
+    setv('sn_syl', d.snapshot.syllabus);
+    setv('sn_stud', d.snapshot.students);
+    setv('sn_back', d.snapshot.backlogs);
+  }
+  if (d.fcChecklist) {
+    for (const [key, val] of Object.entries(d.fcChecklist)) {
+      const sel = document.getElementById('chk_' + key);
+      if (sel) { sel.value = val.status || ''; onChkChange(key, sel); }
+      const lnk = document.getElementById('lnk_' + key) || document.getElementById('chk_' + key);
+      if (lnk && lnk.tagName !== 'SELECT' && val.link) lnk.value = val.link;
+    }
+  }
+  if (d.facSummary && d.facSummary.length > 0) {
+    document.getElementById('facBody').innerHTML = '';
+    facCount = 0;
+    d.facSummary.forEach(f => {
+      addFacRow();
+      const trs = document.querySelectorAll('#facBody tr');
+      const tr = trs[trs.length-1];
+      tr.querySelector('.fn').value = f.name;
+      tr.querySelector('.fc').value = f.course;
+      tr.querySelector('.fcd').value = f.code;
+      const ss = [f.checklist, f.syllabus, f.ca, f.copo, f.survey];
+      const cls = ['.fs1','.fs2','.fs3','.fs4','.fs5'];
+      cls.forEach((c, i) => { const s = tr.querySelector(c); s.value = ss[i]||''; s.onchange(); });
+      tr.querySelector('.frm').value = f.remarks;
+    });
+  }
+  if (d.hodReport) {
+    for (const [key, val] of Object.entries(d.hodReport)) {
+      setv('hod_' + key, val.text);
+    }
+  }
+
+  document.getElementById('dashView').style.display = 'none';
+  document.getElementById('formView').style.display = 'block';
+  document.getElementById('mainProgBar').style.display = 'flex';
+  showToast('Form auto-filled for editing');
+}
+
+
+// ════════════════════════════════════════
+// BUILD FORM
+// ════════════════════════════════════════
+function buildFcChecklist() {
+  const body = document.getElementById('fcChkBody');
+  let html = '';
+  fcChecklist.forEach(sec => {
+    html += `<div class="chk-sec-title"><span>${sec.sec}</span></div>`;
+    sec.items.forEach(item => {
+      const isConditional = !!item.conditional;
+      html += `<div class="chk-row${isConditional?' conditional':''}" id="chkrow_${item.id}">
+        <span class="chk-num">${item.id}</span>
+        <div class="chk-text">${item.text}${isConditional?'<div class="chk-sub">↳ Conditional — fill only if above applies</div>':''}</div>`;
+      if(isConditional && item.textarea) {
+        html += `<div></div><textarea class="chk-textarea" id="chk_${item.id}" placeholder="Enter details here..." rows="3"></textarea>`;
+      } else {
+        html += `<select class="chk-sel" id="chk_${item.id}" onchange="onChkChange('${item.id}',this)">
+          <option value="">— select —</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+          <option value="N/A">N/A</option>
+        </select>
+        <input class="chk-link" type="text" id="lnk_${item.id}" placeholder="${item.link?'Paste link / doc name':'Notes'}">`;
+      }
+      html += '</div>';
+    });
+  });
+  body.innerHTML = html;
+}
+
+function onChkChange(id, sel) {
+  sel.className = 'chk-sel';
+  if(sel.value==='Yes') sel.classList.add('yes');
+  else if(sel.value==='No') sel.classList.add('no');
+  else if(sel.value==='N/A') sel.classList.add('na');
+  fcChecklist.forEach(sec=>sec.items.forEach(item=>{
+    if(item.conditional===id) {
+      const row = document.getElementById(`chkrow_${item.id}`);
+      if(row) row.style.display = (sel.value===item.condVal)?'grid':'none';
+    }
+  }));
+}
+
+function buildHodReport() {
+  const body = document.getElementById('hodReportBody');
+  let html = '';
+  hodReport.forEach(item => {
+    html += `<div class="hod-item">
+      <div class="hod-item-hdr"><div class="hod-item-num">${item.id}</div>${item.title}</div>
+      <div class="hod-item-body">
+        <div class="f" style="margin-bottom:0"><div class="hint" style="margin-bottom:8px;font-size:11.5px;color:var(--ink3)">${item.hint}</div>
+        <textarea id="hod_${item.id}" placeholder="Enter your narrative here..."></textarea></div>
+      </div>
+    </div>`;
+  });
+  body.innerHTML = html;
+}
+
+let facCount = 0;
+function mkSel2(cls) {
+  return `<select class="${cls} chk-sel" style="font-size:11px;padding:4px 5px" onchange="this.className=this.className.replace(/ yes| no/g,'')+(this.value==='Yes'?' yes':this.value==='No'?' no':'')">
+    <option value="">—</option><option>Yes</option><option>No</option><option>N/A</option></select>`;
+}
+function addFacRow() {
+  facCount++;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td style="text-align:center;color:var(--ink3);font-size:11px">${facCount}</td>
+    <td><input type="text" placeholder="Faculty name" class="fn"></td>
+    <td><input type="text" placeholder="Course name" class="fc"></td>
+    <td><input type="text" placeholder="Code" class="fcd" style="max-width:70px"></td>
+    <td>${mkSel2('fs1')}</td>
+    <td>${mkSel2('fs2')}</td>
+    <td>${mkSel2('fs3')}</td>
+    <td>${mkSel2('fs4')}</td>
+    <td>${mkSel2('fs5')}</td>
+    <td><input type="text" placeholder="Remarks" class="frm"></td>
+    <td><button class="del-btn" onclick="this.closest('tr').remove()">×</button></td>`;
+  document.getElementById('facBody').appendChild(tr);
+}
+
+// ════════════════════════════════════════
+// NAV
+// ════════════════════════════════════════
+let curStep = 0;
+function goTo(step) {
+  document.querySelectorAll('.pg').forEach((p,i)=>p.classList.toggle('on',i===step));
+  document.querySelectorAll('.ps').forEach((p,i)=>{
+    p.classList.remove('active','done');
+    if(i===step) p.classList.add('active');
+    else if(i<step) p.classList.add('done');
+  });
+  curStep=step;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ════════════════════════════════════════
+// COLLECT DATA & SUBMIT
+// ════════════════════════════════════════
+function g(id){return (document.getElementById(id)||{}).value||'';}
+
+function collectData() {
+  const fchk = {};
+  fcChecklist.forEach(sec=>sec.items.forEach(item=>{
+    const sel = document.getElementById(`chk_${item.id}`);
+    const lnk = document.getElementById(`lnk_${item.id}`);
+    fchk[item.id] = {status:sel?sel.value:'', link:lnk?lnk.value:''};
+  }));
+
+  const facSummary = [];
+  document.querySelectorAll('#facBody tr').forEach(tr=>{
+    const name = tr.querySelector('.fn')?.value||'';
+    if(name) facSummary.push({
+      name, course:tr.querySelector('.fc')?.value||'',
+      code:tr.querySelector('.fcd')?.value||'',
+      checklist:tr.querySelector('.fs1')?.value||'',
+      syllabus:tr.querySelector('.fs2')?.value||'',
+      ca:tr.querySelector('.fs3')?.value||'',
+      copo:tr.querySelector('.fs4')?.value||'',
+      survey:tr.querySelector('.fs5')?.value||'',
+      remarks:tr.querySelector('.frm')?.value||''
+    });
+  });
+
+  const hodRpt = {};
+  hodReport.forEach(item=>{hodRpt[item.id]={title:item.title,text:g(`hod_${item.id}`)};});
+
+  const email = "{{ user.email }}";
+  const payload = {
+    form_type: 'closure',
+    identity: {submitterEmail: email, campus:g('id_campus'),dept:g('id_dept'),programs:g('id_programs'),hod:g('id_hod'),email:g('id_email'),sem:g('id_sem'),date:g('id_date')},
+    facultyCourse:{name:g('fc_faculty'),course:g('fc_course'),code:g('fc_code'),spec:g('fc_spec'),csem:g('fc_csem'),students:g('fc_students')},
+    fcChecklist:fchk,
+    snapshot:{faculty:g('sn_fac'),submitted:g('sn_sub'),courses:g('sn_courses'),syllabus:g('sn_syl'),students:g('sn_stud'),backlogs:g('sn_back')},
+    facSummary,
+    hodReport:hodRpt
+  };
+  
+  if (currentSubmissionId) payload._id = currentSubmissionId;
+  return payload;
+}
+
+function pill(v){
+  if(!v) return `<span class="pill p-blank">—</span>`;
+  if(v==='Yes') return `<span class="pill p-yes">✓ Yes</span>`;
+  if(v==='No') return `<span class="pill p-no">✗ No</span>`;
+  if(v==='N/A') return `<span class="pill p-na">N/A</span>`;
+  return `<span class="pill p-blank">${v}</span>`;
+}
+
+function buildReview() {
+  const d = collectData();
+  const noItems = Object.entries(d.fcChecklist).filter(([_,v])=>v.status==='No');
+  const yesCount = Object.values(d.fcChecklist).filter(v=>v.status==='Yes').length;
+
+  let html = `
+  <div class="rev-block">
+    <div class="rev-hdr"><span>Department Identity</span><span class="rev-badge">${d.identity.campus||'—'}</span></div>
+    <div class="rev-body">
+      <div class="rev-row"><span class="rev-lbl">Department</span><span class="rev-val">${d.identity.dept||'—'}</span></div>
+      <div class="rev-row"><span class="rev-lbl">Program(s)</span><span class="rev-val">${d.identity.programs||'—'}</span></div>
+      <div class="rev-row"><span class="rev-lbl">HOD</span><span class="rev-val">${d.identity.hod||'—'} · ${d.identity.email||'—'}</span></div>
+    </div>
+  </div>
+  <div class="rev-block">
+    <div class="rev-hdr"><span>Department Snapshot</span></div>
+    <div class="rev-body">
+      <div class="chips">
+        <div class="chip"><b>${d.snapshot.faculty||'—'}</b> faculty</div>
+        <div class="chip"><b>${d.snapshot.submitted||'—'}</b> checklists</div>
+        <div class="chip"><b>${d.snapshot.courses||'—'}</b> courses</div>
+        <div class="chip"><b>${d.snapshot.syllabus||'—'}</b> syllabus complete</div>
+        <div class="chip"><b>${d.snapshot.students||'—'}</b> students</div>
+      </div>
+    </div>
+  </div>
+  <div class="rev-block">
+    <div class="rev-hdr"><span>Faculty Checklist — ${d.facultyCourse.name||'(faculty name not set)'}</span><span class="rev-badge">${yesCount}/26 Yes · ${noItems.length} gaps</span></div>
+    <div class="rev-body">
+      ${noItems.length ? `<strong style="color:var(--red)">⚠ ${noItems.length} item(s) marked No</strong>` : `<span style="color:var(--green)">✓ No items marked No</span>`}
+    </div>
+  </div>`;
+  document.getElementById('reviewContent').innerHTML = html;
+}
+
+function submitForm() {
+  const d = collectData();
+  if(!d.identity.campus||!d.identity.dept||!d.identity.hod){
+    toast('⚠ Fill Campus, Department & HOD Name in Step 1');return;
+  }
+  
+  fetch('/api/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(d)
+  }).then(r => r.json()).then(res => {
+    if (res.ok) {
+      document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+      document.getElementById('successScreen').classList.add('on');
+      document.getElementById('mainProgBar').style.display = 'none';
+      document.getElementById('subList').innerHTML = `
+        <div class="sub-entry">
+          <div><span class="se-dept">${d.identity.dept||'Unknown'}</span>
+            <span class="se-meta"> — ${d.identity.campus||'—'}</span></div>
+          <span style="color:var(--green);font-size:12px">✓ Saved to Database</span>
+        </div>`;
+      window.scrollTo({top:0,behavior:'smooth'});
+    } else {
+      toast('⚠ Submission failed. Please try again.');
+    }
+  });
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'),3200);
+}
+</script>
+</body>
+</html>

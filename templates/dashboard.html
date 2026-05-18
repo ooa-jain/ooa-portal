@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Office of Academics | Jain University</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --navy: #0a2558;
+      --navy2: #143572;
+      --gold: #f2a900;
+      --bg: #ffffff;
+      --ink: #111827;
+      --ink2: #374151;
+      --ink3: #6b7280;
+      --r: 12px;
+      --sh2: 0 12px 48px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(rgba(10, 37, 88, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 37, 88, 0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    .site-header {
+      background: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 24px rgba(0, 0, 0, .08);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 28px;
+      height: 68px;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .logo-text .l1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.1
+    }
+
+    .logo-text .l2 {
+      font-size: 11px;
+      color: var(--navy);
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-top: 2px
+    }
+
+    .page-wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 36px 28px 100px;
+    }
+
+    .page-heading {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .page-heading h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      color: var(--navy);
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      justify-content: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .dash-card {
+      background: #fff;
+      border-radius: var(--r);
+      padding: 32px 24px;
+      box-shadow: var(--sh2);
+      text-align: center;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      border: 2px solid transparent;
+      transition: 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .dash-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--navy);
+    }
+
+    .card-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: var(--ink3);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      background: var(--navy);
+      color: #fff;
+      transition: 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dash-card:hover .btn {
+      background: var(--gold);
+      color: var(--navy);
+    }
+
+    .notice {
+      background: #fff8eb;
+      border: 1px solid #f2a900;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      color: #9e6f00;
+      font-weight: 600;
+      margin-top: auto;
+      width: 100%;
+    }
+
+    .logout {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--danger);
+      text-decoration: none;
+    }
+
+    .btn-profile {
+      background: #f0f3fa;
+      color: var(--navy);
+      padding: 8px 16px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1px solid var(--navy);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
+    .btn-profile:hover {
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(10, 37, 88, 0.6);
+      z-index: 500;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%; max-width: 480px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.35);
+    }
+    .modal h3 { font-size: 18px; color: var(--navy); margin-bottom: 20px; font-family: 'Playfair Display', serif; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 12px; font-weight: 700; color: var(--ink2); margin-bottom: 6px; }
+    .field input, .field select { width: 100%; padding: 10px 14px; border: 1px solid #dde3f0; border-radius: 8px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; }
+    .field input[readonly] { background: #f9fafb; color: var(--ink3); cursor: not-allowed; }
+    
+    .introjs-tooltip {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      border-radius: 12px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.1);
+    }
+    .introjs-button {
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    #lockScreen {
+      display: none;
+      position: fixed; inset: 0;
+      background: var(--bg);
+      background-image: linear-gradient(rgba(10, 37, 88, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(10, 37, 88, 0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      z-index: 9999;
+      align-items: center; justify-content: center;
+      flex-direction: column;
+    }
+    #lockScreen.active { display: flex; }
+    
+    .lock-box {
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: var(--sh2);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-area">
+        <img src="/static/images/jain.png" alt="Jain University" style="height: 38px; object-fit: contain;" onerror="this.style.display='none'">
+        <div style="width: 1px; height: 30px; background: #e0e5f2; margin: 0 4px;"></div>
+        <div class="logo-text">
+          <div class="l1">JAIN University</div>
+          <div class="l2">Office of Academics</div>
+        </div>
+      </div>
+      <div class="hdr-right" style="display: flex; align-items: center; gap: 16px;">
+        <span style="font-size:13px; font-weight:600;">Hi, {{ user.name }}</span>
+        <button class="btn-profile" onclick="lockScreenNow()" style="background:#fff; color:var(--ink3); border-color:transparent;">🔒 Lock</button>
+        <button class="btn-profile" onclick="startTour()" style="background:#fff; color:var(--ink3); border-color:transparent;">🗺 Take Tour</button>
+        <button id="profileBtn" class="btn-profile" onclick="openProfile()" data-intro="Update your department profile and set a Passcode here." data-step="3">
+          👤 Profile
+        </button>
+        <a href="/api/logout" class="logout">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-wrap">
+    <div class="page-heading">
+      <h2>Welcome to Office of Academics Portal</h2>
+      <p style="color:var(--ink3); margin-top:8px;">Please select the module you wish to access</p>
+    </div>
+
+    <div class="cards-grid">
+      {% if settings.readiness_enabled %}
+      <a href="/readiness" class="dash-card" data-intro="Click here to prepare and submit the readiness report." data-step="1">
+
+        <div class="card-title">Semester Readiness</div>
+        <div class="card-desc">Prepare and submit the readiness report before the start of the semester.</div>
+        <button class="btn">Go to Readiness</button>
+        {% if settings.readiness_deadline %}
+        <div class="notice" style="margin-top:20px;">
+          ⚠ Last day to submission is {{ settings.readiness_deadline }}
+        </div>
+        {% endif %}
+      </a>
+      {% endif %}
+
+      {% if settings.closure_enabled %}
+      <a href="/closure" class="dash-card" data-intro="Click here to compile and submit the closure report at the end of the semester." data-step="2">
+
+        <div class="card-title">Semester Closure</div>
+        <div class="card-desc">Compile and submit the closure report at the end of the semester.</div>
+        <button class="btn">Go to Closure</button>
+        {% if settings.closure_deadline %}
+        <div class="notice" style="margin-top:20px;">
+          ⚠ Last day to submission is {{ settings.closure_deadline }}
+        </div>
+        {% endif %}
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="profileModal">
+    <div class="modal">
+      <h3>Your Profile</h3>
+      <div class="field">
+        <label>Name</label>
+        <input type="text" value="{{ user.name }}" readonly>
+      </div>
+      <div class="field">
+        <label>Email ID</label>
+        <input type="text" value="{{ user.email }}" readonly>
+      </div>
+      <div class="field">
+        <label>Department</label>
+        <select id="profileDept">
+          <option value="">-- Select Department --</option>
+          {% for dept in departments %}
+          <option value="{{ dept }}" {% if user.department == dept %}selected{% endif %}>{{ dept }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field" style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+        <input type="checkbox" id="profileLockEnabled" style="width:auto;" {% if user.lock_enabled %}checked{% endif %}>
+        <label style="margin-bottom:0;">Enable Dashboard Lock (Requires Passcode on entry)</label>
+      </div>
+      <div class="field">
+        <label>Auto-Lock Timer</label>
+        <select id="profileTimeout">
+          <option value="5" {% if user.timeout_pref == 5 %}selected{% endif %}>5 Minutes</option>
+          <option value="10" {% if user.timeout_pref == 10 %}selected{% endif %}>10 Minutes</option>
+          <option value="15" {% if user.timeout_pref == 15 %}selected{% endif %}>15 Minutes</option>
+          <option value="0" {% if user.timeout_pref == 0 %}selected{% endif %}>Never</option>
+        </select>
+      </div>
+      <div class="field" style="margin-top:20px; padding-top:20px; border-top:1px solid #eee;">
+        <label>Security Passcode</label>
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+          <input type="password" id="profileOldPasscode" placeholder="Old" maxlength="4" style="text-align:center; font-size:16px; letter-spacing:2px; max-width: 80px;" title="Leave blank if setting for the first time">
+          <input type="password" id="profileNewPasscode" placeholder="New" maxlength="4" style="text-align:center; font-size:16px; letter-spacing:2px; max-width: 80px;">
+          <button class="btn" style="background:#f0f3fa; color:var(--navy); border:none; padding:8px 12px; font-size:12px;" onclick="setPasscode()">Update</button>
+        </div>
+        <div style="font-size:11px; color:var(--ink3); display:flex; justify-content:space-between;">
+          <span>Leave 'Old' blank if setting for the first time.</span>
+          <a href="#" onclick="requestPasscodeReset(); return false;" style="color:var(--navy); font-weight:600; text-decoration:none;">Forgot?</a>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px;">
+        <button class="btn" style="background:#fff; color:var(--ink3); border:1px solid #ddd;" onclick="closeProfile()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveProfile()">Save Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="lockScreen">
+    <div class="lock-box">
+      <img src="/static/images/jain.png" alt="Jain" style="height: 48px; margin-bottom: 20px;" onerror="this.style.display='none'">
+      
+      <div id="lockMain">
+        <h2 style="font-size: 20px; color: var(--navy); margin-bottom: 8px;">Screen Locked</h2>
+        <p style="font-size: 13px; color: var(--ink3); margin-bottom: 24px;">Please enter your passcode to continue.</p>
+        <div class="field" style="margin-bottom: 24px;">
+          <input type="password" id="unlockPasscode" placeholder="••••" maxlength="4" style="text-align:center; font-size:24px; letter-spacing:8px;" onkeydown="if(event.key==='Enter') unlockScreen()">
+        </div>
+        <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-bottom: 12px;" onclick="unlockScreen()">Unlock</button>
+        <div style="margin-bottom: 20px;">
+          <a href="#" onclick="showLockReset(); return false;" style="font-size: 12px; color: var(--navy); font-weight: 600; text-decoration: none;">Forgot Passcode?</a>
+        </div>
+      </div>
+
+      <div id="lockReset" style="display:none;">
+        <h2 style="font-size: 20px; color: var(--navy); margin-bottom: 8px;">Reset Passcode</h2>
+        <p style="font-size: 13px; color: var(--ink3); margin-bottom: 24px;">Enter the OTP sent to your email.</p>
+        <div class="field" style="margin-bottom: 12px;">
+          <input type="text" id="lockOtp" placeholder="Enter OTP" maxlength="4" style="text-align:center; font-size:18px; letter-spacing:4px;">
+        </div>
+        <div class="field" style="margin-bottom: 20px;">
+          <input type="password" id="lockNewPasscode" placeholder="New Passcode" maxlength="4" style="text-align:center; font-size:18px; letter-spacing:4px;">
+        </div>
+        <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-bottom: 12px;" onclick="doLockReset()">Reset & Unlock</button>
+        <div style="margin-bottom: 20px;">
+          <a href="#" onclick="hideLockReset(); return false;" style="font-size: 12px; color: var(--ink3); font-weight: 600; text-decoration: none;">Back</a>
+        </div>
+      </div>
+
+      <a href="/api/logout" style="font-size: 13px; color: var(--danger); font-weight: 600; text-decoration: none;">Sign out</a>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
+  <script>
+    function openProfile() {
+      document.getElementById('profileModal').classList.add('open');
+    }
+    function closeProfile() {
+      document.getElementById('profileModal').classList.remove('open');
+    }
+    function saveProfile() {
+      const dept = document.getElementById('profileDept').value;
+      const timeout_pref = document.getElementById('profileTimeout').value;
+      const lock_enabled = document.getElementById('profileLockEnabled').checked;
+      if(!dept) { alert('Please select a department'); return; }
+      fetch('/api/update-profile', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          department: dept, 
+          timeout_pref: parseInt(timeout_pref),
+          lock_enabled: lock_enabled
+        })
+      }).then(r => r.json()).then(res => {
+        if(res.ok) {
+          closeProfile();
+          window.location.reload();
+        } else alert(res.error);
+      });
+    }
+
+    function setPasscode() {
+      const old_passcode = document.getElementById('profileOldPasscode').value;
+      const new_passcode = document.getElementById('profileNewPasscode').value;
+      if(new_passcode.length !== 4) { alert('Please enter a 4-digit new passcode.'); return; }
+      fetch('/api/change-passcode', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({old_passcode, new_passcode})
+      }).then(r => r.json()).then(res => {
+        if(res.ok) {
+          alert('Passcode updated successfully!');
+          document.getElementById('profileOldPasscode').value = '';
+          document.getElementById('profileNewPasscode').value = '';
+        } else alert(res.error);
+      });
+    }
+
+    function showLockReset() {
+      const email = "{{ user.email }}";
+      fetch('/api/forgot-passcode', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({email})
+      }).then(r => r.json()).then(res => {
+        if(res.ok) {
+          document.getElementById('lockMain').style.display = 'none';
+          document.getElementById('lockReset').style.display = 'block';
+          alert("OTP sent to your email!");
+        } else alert(res.error);
+      });
+    }
+
+    function hideLockReset() {
+      document.getElementById('lockMain').style.display = 'block';
+      document.getElementById('lockReset').style.display = 'none';
+    }
+
+    function doLockReset() {
+      const otp = document.getElementById('lockOtp').value;
+      const passcode = document.getElementById('lockNewPasscode').value;
+      if(otp.length !== 4 || passcode.length !== 4) { alert("Enter 4-digit OTP and New Passcode"); return; }
+      
+      fetch('/api/reset-passcode', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({otp, passcode})
+      }).then(r => r.json()).then(res => {
+        if(res.ok) {
+          alert("Passcode reset successfully!");
+          document.getElementById('lockScreen').classList.remove('active');
+          hideLockReset();
+          resetTimer();
+        } else alert(res.error);
+      });
+    }
+
+    function requestPasscodeReset() {
+      const email = "{{ user.email }}";
+      fetch('/api/forgot-passcode', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({email})
+      }).then(r => r.json()).then(res => {
+        if(res.ok) {
+          alert("An OTP has been sent to your email. You will be redirected to the login page to reset your passcode.");
+          window.location.href = '/api/logout';
+        } else alert(res.error);
+      });
+    }
+
+    // Auto-Lock Timer Logic
+    const timeoutPref = parseInt("{{ user.timeout_pref }}") || 0;
+    let idleTime = 0;
+    let idleInterval;
+
+    if (timeoutPref > 0) {
+      idleInterval = setInterval(timerIncrement, 60000); // 1 minute
+      // Reset on activity
+      document.onmousemove = resetTimer;
+      document.onkeypress = resetTimer;
+      document.onclick = resetTimer;
+      document.onscroll = resetTimer;
+    }
+
+    function timerIncrement() {
+      idleTime = idleTime + 1;
+      if (idleTime >= timeoutPref) {
+        lockScreenNow();
+      }
+    }
+
+    function resetTimer() {
+      idleTime = 0;
+    }
+
+    function lockScreenNow() {
+      document.getElementById('lockScreen').classList.add('active');
+      document.getElementById('unlockPasscode').value = '';
+      document.getElementById('unlockPasscode').focus();
+    }
+
+    function unlockScreen() {
+      const passcode = document.getElementById('unlockPasscode').value;
+      fetch('/api/verify-passcode', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({passcode})
+      }).then(r => r.json()).then(res => {
+        if(res.ok) {
+          document.getElementById('lockScreen').classList.remove('active');
+          resetTimer();
+        } else {
+          alert("Incorrect passcode");
+        }
+      });
+    }
+
+    function startTour() {
+      introJs().setOptions({
+        showProgress: true,
+        showBullets: false,
+        doneLabel: 'Complete Tour',
+        tooltipClass: 'customTooltip'
+      }).start().oncomplete(function() {
+        openProfile();
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      {% if user.lock_enabled %}
+        lockScreenNow();
+      {% endif %}
+      {% if user.first_time_login %}
+        startTour();
+      {% endif %}
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,2300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semester Readiness — Office of Academics | Jain University</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --navy: #0a2558;
+      --navy2: #143572;
+      --navy3: #1a428a;
+      --gold: #f2a900;
+      --gold2: #e09b00;
+      --bg: #ffffff;
+      --ink: #111827;
+      --ink2: #374151;
+      --ink3: #6b7280;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --r: 12px;
+      --r2: 8px;
+      --sh: 0 4px 20px rgba(0, 0, 0, 0.05);
+      --sh2: 0 12px 48px rgba(0, 0, 0, 0.08);
+    }
+
+    html {
+      font-size: 15px;
+      scroll-behavior: smooth
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(rgba(10, 37, 88, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 37, 88, 0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--ink);
+      min-height: 100vh
+    }
+
+    /* ── Header ── */
+    .site-header {
+      background: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 24px rgba(0, 0, 0, .08)
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 28px;
+      height: 68px
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .logo-img {
+      height: 44px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .logo-divider {
+      width: 1px;
+      height: 36px;
+      background: rgba(10, 37, 88, .15)
+    }
+
+    .logo-text .l1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.1
+    }
+
+    .logo-text .l2 {
+      font-size: 11px;
+      color: var(--navy3);
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-top: 2px
+    }
+
+    .hdr-right {
+      text-align: right
+    }
+
+    .hdr-right .semester-tag {
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 99px;
+      letter-spacing: .06em;
+      display: inline-block
+    }
+
+    .hdr-right .campus-tag {
+      color: var(--ink3);
+      font-size: 11px;
+      margin-top: 4px
+    }
+
+    /* ── Progress ── */
+    .prog-bar {
+      background: #fafbff;
+      border-top: 1px solid #edf0f8
+    }
+
+    .prog-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      padding: 0 28px
+    }
+
+    .ps {
+      flex: 1;
+      padding: 10px 4px;
+      font-size: 11px;
+      color: var(--ink3);
+      text-align: center;
+      cursor: pointer;
+      transition: .2s;
+      border-bottom: 3px solid transparent;
+      letter-spacing: .03em;
+      font-weight: 500;
+      white-space: nowrap
+    }
+
+    .ps:hover {
+      color: var(--navy);
+    }
+
+    .ps.active {
+      color: var(--navy);
+      border-bottom-color: var(--navy);
+      font-weight: 700
+    }
+
+    .ps.done {
+      color: var(--navy3)
+    }
+
+    .ps.done::before {
+      content: '✓ ';
+      font-size: 10px;
+      color: var(--success)
+    }
+
+    /* ── Layout ── */
+    .page-wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 36px 28px 100px
+    }
+
+    .section-page {
+      display: none
+    }
+
+    .section-page.active {
+      display: block;
+      animation: rise .35s cubic-bezier(.16, 1, .3, 1)
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(16px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .page-heading {
+      margin-bottom: 32px
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 3px 12px;
+      border-radius: 99px;
+      margin-bottom: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase
+    }
+
+    .page-heading h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      color: var(--navy);
+      line-height: 1.2
+    }
+
+    .page-heading p {
+      color: var(--ink3);
+      font-size: 13.5px;
+      margin-top: 8px;
+      line-height: 1.65
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--bg2);
+      border: 1px solid #dde3f0;
+      border-radius: var(--r);
+      padding: 26px;
+      margin-bottom: 22px;
+      box-shadow: var(--sh)
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--bg3)
+    }
+
+    .card-header .ch-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--navy);
+      border-radius: var(--r3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0
+    }
+
+    .card-header .ch-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: .07em
+    }
+
+    .card-header .ch-sub {
+      font-size: 11.5px;
+      color: var(--ink3);
+      margin-top: 1px
+    }
+
+    /* ── Fields ── */
+    .field-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin-bottom: 16px
+    }
+
+    .field-grid.cols-1 {
+      grid-template-columns: 1fr
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px
+    }
+
+    .field label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: .04em;
+      text-transform: uppercase
+    }
+
+    .field label .req {
+      color: var(--orange);
+      margin-left: 2px
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      padding: 10px 14px;
+      border: 2px solid #dde3f0;
+      border-radius: var(--r2);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      color: var(--ink);
+      background: #fafbff;
+      transition: .15s;
+      outline: none;
+      width: 100%
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--navy3);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(26, 74, 154, .08)
+    }
+
+    .field input.err,
+    .field select.err {
+      border-color: var(--danger)
+    }
+
+    .field textarea {
+      min-height: 80px;
+      resize: vertical
+    }
+
+    .field .hint {
+      font-size: 11px;
+      color: var(--ink3)
+    }
+
+    /* ── Snap grid ── */
+    .snap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px
+    }
+
+    .snap-item {
+      background: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 100%);
+      border: 2px solid #d0d8f0;
+      border-radius: var(--r);
+      padding: 16px 12px;
+      text-align: center;
+      transition: .15s
+    }
+
+    .snap-item:focus-within {
+      border-color: var(--navy);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(10, 37, 88, .08)
+    }
+
+    .snap-item label {
+      display: block;
+      font-size: 10.5px;
+      color: var(--navy);
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.35;
+      text-transform: uppercase;
+      letter-spacing: .04em
+    }
+
+    .snap-item input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      text-align: center;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--navy);
+      font-family: 'Playfair Display', serif;
+      outline: none
+    }
+
+    .snap-item input::placeholder {
+      font-size: 20px;
+      color: #bbc4da
+    }
+
+    /* ── Dynamic table ── */
+    .dyn-wrap {
+      overflow-x: auto;
+      margin-bottom: 10px;
+      border-radius: var(--r2);
+      border: 1px solid #dde3f0
+    }
+
+    .dyn-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 580px
+    }
+
+    .dyn-table thead tr {
+      background: var(--navy)
+    }
+
+    .dyn-table thead th {
+      padding: 11px 10px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 11px;
+      color: #fff;
+      letter-spacing: .05em;
+      white-space: nowrap
+    }
+
+    .dyn-table tbody tr {
+      border-bottom: 1px solid #edf0f8;
+      transition: .1s
+    }
+
+    .dyn-table tbody tr:hover {
+      background: #f5f8ff
+    }
+
+    .dyn-table tbody td {
+      padding: 7px 8px;
+      vertical-align: middle
+    }
+
+    .dyn-table td input,
+    .dyn-table td select {
+      width: 100%;
+      border: 1.5px solid transparent;
+      background: transparent;
+      padding: 6px 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      color: var(--ink);
+      outline: none;
+      border-radius: 5px;
+      transition: .12s
+    }
+
+    .dyn-table td input:focus,
+    .dyn-table td select:focus {
+      border-color: var(--navy3);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(26, 74, 154, .08)
+    }
+
+    .dyn-table tfoot {
+      background: #f0f4ff
+    }
+
+    .dyn-table tfoot td {
+      padding: 9px 10px;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--navy)
+    }
+
+    .del-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #c0cce0;
+      font-size: 18px;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: .12s;
+      line-height: 1
+    }
+
+    .del-btn:hover {
+      color: var(--danger);
+      background: #fff0f0
+    }
+
+    .add-row-btn {
+      width: 100%;
+      border: 2px dashed #b0bee8;
+      border-radius: var(--r2);
+      padding: 10px;
+      color: var(--navy3);
+      font-size: 13px;
+      font-weight: 600;
+      background: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: .15s;
+      margin-top: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif
+    }
+
+    .add-row-btn:hover {
+      background: #f0f4ff;
+      border-color: var(--navy);
+      color: var(--navy)
+    }
+
+    /* ── Faculty Upload Zone ── */
+    .upload-zone {
+      border: 2.5px dashed #a0b0d8;
+      border-radius: var(--r);
+      padding: 40px 24px;
+      text-align: center;
+      background: linear-gradient(135deg, #f5f8ff, #eef2ff);
+      cursor: pointer;
+      transition: .2s;
+      position: relative
+    }
+
+    .upload-zone:hover,
+    .upload-zone.dragover {
+      border-color: var(--navy);
+      background: #edf1ff;
+      box-shadow: 0 0 0 4px rgba(10, 37, 88, .06)
+    }
+
+    .upload-zone input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%
+    }
+
+    .upload-icon {
+      font-size: 44px;
+      margin-bottom: 12px;
+      display: block
+    }
+
+    .upload-zone h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px
+    }
+
+    .upload-zone p {
+      font-size: 12.5px;
+      color: var(--ink3);
+      line-height: 1.6
+    }
+
+    .upload-zone .upload-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--navy);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 99px;
+      margin-top: 14px;
+      pointer-events: none
+    }
+
+    .template-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fffbf0;
+      border: 1.5px solid var(--gold);
+      border-radius: var(--r2);
+      padding: 12px 16px;
+      margin-bottom: 16px
+    }
+
+    .template-bar .tb-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy)
+    }
+
+    .template-bar .tb-sub {
+      font-size: 11.5px;
+      color: var(--ink3);
+      margin-top: 2px
+    }
+
+    .upload-result {
+      display: none;
+      background: #e8f5ee;
+      border: 1.5px solid #5aba7d;
+      border-radius: var(--r2);
+      padding: 14px 16px;
+      margin-top: 14px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #0f5a2a
+    }
+
+    .upload-result.error {
+      background: #fde8e8;
+      border-color: #e06060;
+      color: #7a1a1a
+    }
+
+    /* Preview table after upload */
+    .preview-wrap {
+      display: none;
+      margin-top: 18px
+    }
+
+    .preview-wrap .pw-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px
+    }
+
+    .preview-wrap h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy)
+    }
+
+    .preview-clear {
+      background: none;
+      border: none;
+      font-size: 12px;
+      color: var(--danger);
+      cursor: pointer;
+      font-weight: 600;
+      font-family: 'Plus Jakarta Sans', sans-serif
+    }
+
+    .preview-scroll {
+      overflow-x: auto;
+      border-radius: var(--r2);
+      border: 1px solid #dde3f0
+    }
+
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      min-width: 700px
+    }
+
+    .preview-table thead th {
+      background: var(--navy);
+      color: #fff;
+      padding: 8px 10px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em
+    }
+
+    .preview-table tbody tr:nth-child(even) {
+      background: #f5f8ff
+    }
+
+    .preview-table tbody td {
+      padding: 7px 10px;
+      border-bottom: 1px solid #edf0f8;
+      color: var(--ink)
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 99px;
+      font-size: 10.5px;
+      font-weight: 700
+    }
+
+    .sp-yes {
+      background: #e0f5ea;
+      color: #0f5a2a
+    }
+
+    .sp-no {
+      background: #fde8e8;
+      color: #7a1a1a
+    }
+
+    .sp-pending {
+      background: #fff4e0;
+      color: #8a4800
+    }
+
+    .sp-blank {
+      background: #eee;
+      color: #666
+    }
+
+    /* ── Checklist ── */
+    .chk-section {
+      margin-bottom: 4px
+    }
+
+    .chk-section-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      padding: 12px 0 6px;
+      border-bottom: 2px solid var(--bg3);
+      margin: 18px 0 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .chk-section-title::before {
+      content: '';
+      display: block;
+      width: 18px;
+      height: 3px;
+      background: var(--gold);
+      border-radius: 2px
+    }
+
+    .chk-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 8px;
+      border-bottom: 1px solid #f0f3fb;
+      transition: .1s;
+      border-radius: var(--r3)
+    }
+
+    .chk-row:hover {
+      background: #f7f9ff
+    }
+
+    .chk-num {
+      font-size: 11px;
+      color: var(--ink3);
+      min-width: 24px;
+      font-weight: 700;
+      text-align: center
+    }
+
+    .chk-text {
+      flex: 1;
+      font-size: 13.5px;
+      line-height: 1.45;
+      color: var(--ink)
+    }
+
+    .kochi-badge {
+      display: inline-block;
+      background: #fff3cc;
+      color: #8a5c00;
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 99px;
+      margin-left: 6px;
+      border: 1px solid #f4cf60
+    }
+
+    .chk-sel {
+      padding: 6px 8px;
+      border: 2px solid #dde3f0;
+      border-radius: var(--r3);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      transition: .15s;
+      min-width: 82px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #fafbff
+    }
+
+    .chk-sel:focus {
+      border-color: var(--navy3)
+    }
+
+    .chk-sel.yes {
+      border-color: #1a7a4a;
+      color: #1a7a4a;
+      background: #edfaf3
+    }
+
+    .chk-sel.no {
+      border-color: #c0392b;
+      color: #c0392b;
+      background: #fdf0f0
+    }
+
+    .chk-sel.na {
+      border-color: #aaa;
+      color: #888;
+      background: #f5f5f5
+    }
+
+    .chk-remark {
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 2px solid #dde3f0;
+      border-radius: var(--r3);
+      min-width: 160px;
+      outline: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: .15s;
+      background: #fafbff
+    }
+
+    .chk-remark:focus {
+      border-color: var(--navy3);
+      background: #fff
+    }
+
+    /* ── Nav bar ── */
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+      padding-top: 22px;
+      border-top: 2px solid #e8ecf5
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: var(--r2);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 2px solid;
+      transition: .15s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: .01em
+    }
+
+    .btn-ghost {
+      border-color: #c8d2e8;
+      background: transparent;
+      color: var(--ink2)
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg3);
+      border-color: var(--navy)
+    }
+
+    .btn-primary {
+      border-color: var(--navy);
+      background: var(--navy);
+      color: #fff
+    }
+
+    .btn-primary:hover {
+      background: var(--navy2);
+      border-color: var(--navy2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(10, 37, 88, .3)
+    }
+
+    .btn-gold {
+      border-color: var(--gold2);
+      background: var(--gold);
+      color: var(--navy)
+    }
+
+    .btn-gold:hover {
+      background: var(--gold2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(244, 168, 25, .35)
+    }
+
+    .btn-success {
+      border-color: #156a3c;
+      background: #1a8a4f;
+      color: #fff
+    }
+
+    .btn-success:hover {
+      background: #156a3c;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(26, 138, 79, .35)
+    }
+
+    .btn-danger {
+      border-color: var(--orange2);
+      background: var(--orange);
+      color: #fff
+    }
+
+    /* ── Review ── */
+    .rev-block {
+      border: 1px solid #dde3f0;
+      border-radius: var(--r);
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: var(--sh)
+    }
+
+    .rev-header {
+      background: var(--navy);
+      color: #fff;
+      padding: 12px 18px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      letter-spacing: .04em;
+      text-transform: uppercase
+    }
+
+    .rev-badge {
+      background: var(--gold);
+      color: var(--navy);
+      padding: 2px 12px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 800
+    }
+
+    .rev-body {
+      padding: 16px 18px;
+      font-size: 13.5px;
+      line-height: 1.85
+    }
+
+    .rb-row {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      margin-bottom: 2px
+    }
+
+    .rb-label {
+      color: var(--ink3);
+      font-size: 12px;
+      min-width: 140px;
+      flex-shrink: 0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .04em
+    }
+
+    .rb-val {
+      color: var(--ink);
+      font-weight: 600
+    }
+
+    .metric-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px
+    }
+
+    .chip {
+      background: #f0f4ff;
+      border: 1.5px solid #c8d4f0;
+      border-radius: var(--r3);
+      padding: 6px 14px;
+      font-size: 12.5px;
+      color: var(--navy)
+    }
+
+    .chip b {
+      font-weight: 800
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700
+    }
+
+    .p-yes {
+      background: #e0f5ea;
+      color: #0f5a2a
+    }
+
+    .p-no {
+      background: #fde8e8;
+      color: #7a1a1a
+    }
+
+    .p-pend {
+      background: #fff4e0;
+      color: #8a4800
+    }
+
+    .p-blank {
+      background: #eeeff4;
+      color: #888
+    }
+
+    .gap-list {
+      background: #fff5f5;
+      border: 1.5px solid #f0c0c0;
+      border-radius: var(--r2);
+      padding: 14px 16px;
+      margin-top: 12px;
+      font-size: 13px;
+      line-height: 1.8
+    }
+
+    .gap-item {
+      display: flex;
+      gap: 8px;
+      color: #7a1a1a;
+      margin-bottom: 2px
+    }
+
+    /* ── Success ── */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 60px 24px
+    }
+
+    .success-screen.active {
+      display: block;
+      animation: rise .4s ease
+    }
+
+    .success-icon {
+      font-size: 72px;
+      margin-bottom: 18px;
+      animation: pop .5s ease
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(.4)
+      }
+
+      65% {
+        transform: scale(1.12)
+      }
+
+      100% {
+        transform: scale(1)
+      }
+    }
+
+    .success-screen h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 34px;
+      color: var(--navy);
+      margin-bottom: 10px
+    }
+
+    .success-screen p {
+      color: var(--ink2);
+      font-size: 15px;
+      max-width: 520px;
+      margin: 0 auto 30px;
+      line-height: 1.65
+    }
+
+    .sub-list-panel {
+      background: #fff;
+      border: 1px solid #dde3f0;
+      border-radius: var(--r);
+      padding: 22px;
+      margin: 24px 0;
+      text-align: left;
+      box-shadow: var(--sh)
+    }
+
+    .sub-list-panel h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      margin-bottom: 14px
+    }
+
+    .sub-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px solid #f0f3fb;
+      font-size: 13px
+    }
+
+    .sub-entry:last-child {
+      border-bottom: none
+    }
+
+    .sub-dept {
+      font-weight: 700;
+      color: var(--navy)
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--navy);
+      color: #fff;
+      padding: 13px 26px;
+      border-radius: var(--r);
+      font-size: 13.5px;
+      opacity: 0;
+      transition: .3s;
+      pointer-events: none;
+      z-index: 999;
+      box-shadow: var(--sh2);
+      white-space: nowrap;
+      border-left: 4px solid var(--gold)
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0)
+    }
+
+    /* ── Readiness status table ── */
+    .rs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px
+    }
+
+    .rs-table th {
+      background: var(--navy);
+      color: #fff;
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .05em
+    }
+
+    .rs-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #edf0f8;
+      vertical-align: middle
+    }
+
+    .rs-table tbody tr:hover {
+      background: #f7f9ff
+    }
+
+    .rs-table td select,
+    .rs-table td input {
+      border: 1.5px solid #dde3f0;
+      background: #fafbff;
+      border-radius: var(--r3);
+      padding: 6px 9px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: .12s
+    }
+
+    .rs-table td select:focus,
+    .rs-table td input:focus {
+      border-color: var(--navy3);
+      background: #fff
+    }
+
+    /* ── Responsive ── */
+    @media(max-width:660px) {
+      .snap-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .page-wrap {
+        padding: 20px 16px 70px
+      }
+
+      .ps {
+        font-size: 9.5px
+      }
+
+      .logo-text .l1 {
+        font-size: 13px
+      }
+
+      .hdr-right {
+        display: none
+      }
+    }
+
+    /* ── Dashboard Page ── */
+    .dash-wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 36px 28px 100px;
+    }
+
+    .dash-card {
+      background: #fff;
+      border: 1px solid #dde3f0;
+      border-radius: var(--r);
+      padding: 20px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: 0.2s;
+    }
+
+    .dash-card:hover {
+      border-color: var(--navy3);
+      box-shadow: var(--sh);
+    }
+
+    .dc-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .dc-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .dc-sub {
+      font-size: 13px;
+      color: var(--ink3);
+    }
+
+    .dc-right {
+      display: flex;
+      gap: 10px;
+    }
+
+    .hdr-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: 20px;
+      padding-left: 20px;
+      border-left: 1px solid #dde3f0;
+    }
+
+    .user-greeting {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .view-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 37, 88, 0.6);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .view-modal.show {
+      display: flex;
+    }
+
+    .vm-content {
+      background: #fff;
+      border-radius: var(--r);
+      width: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    .vm-close {
+      float: right;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-area">
+        <img src="/static/images/jain.png" alt="Jain University" class="logo-img" onerror="this.style.display='none'">
+        <div class="logo-divider"></div>
+        <div class="logo-text">
+          <div class="l1">Semester Readiness Portal</div>
+          <div class="l2">Office of Academics — OoA</div>
+        </div>
+      </div>
+      <div class="hdr-right" style="display: flex; align-items: center;">
+        <div style="text-align: right;">
+          <span class="semester-tag">Even Semester 2025–26</span>
+          <div class="campus-tag">Bangalore &amp; Kochi Campus</div>
+        </div>
+        <div class="hdr-user">
+          <div class="user-greeting">Welcome, {{ user.name }}</div>
+          <button class="btn btn-ghost" style="padding: 6px 12px; font-size: 11px;" onclick="doLogout()">Logout</button>
+        </div>
+      </div>
+    </div>
+    <div class="prog-bar" id="mainProgBar" style="display: none;">
+      <div class="prog-inner" id="progBar">
+        <div class="ps active" onclick="goTo(0)">1. Identity</div>
+        <div class="ps" onclick="goTo(1)">2. Snapshot</div>
+        <div class="ps" onclick="goTo(2)">3. Programs</div>
+        <div class="ps" onclick="goTo(3)">4. Faculty</div>
+        <div class="ps" onclick="goTo(4)">5. HOD Checklist</div>
+        <div class="ps" onclick="goTo(5)">6. Review &amp; Submit</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="dash-wrap" id="dashView">
+    <div class="page-heading" style="display: flex; justify-content: space-between; align-items: flex-end;">
+      <div>
+        <h2>Your Submissions</h2>
+        <p>Manage your past readiness forms or start a new one.</p>
+      </div>
+      <button class="btn btn-primary" onclick="startNewForm()">＋ Start New Submission</button>
+    </div>
+    <div id="dashList">
+      <div style="text-align: center; color: var(--ink3); padding: 40px;">Loading submissions...</div>
+    </div>
+  </div>
+
+  <div class="page-wrap" id="formView" style="display: none;">
+
+    <!-- PAGE 0: IDENTITY -->
+    <div class="section-page active" id="page0">
+      <div class="page-heading">
+        <span class="step-badge">Step 1 of 6</span>
+        <h2>Department Identity</h2>
+        <p>Fill this page first. All fields marked <span style="color:var(--orange)">*</span> are mandatory before
+          submission.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="ch-icon">🏛️</div>
+          <div>
+            <div class="ch-title">Campus &amp; Department</div>
+          </div>
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label>Campus <span class="req">*</span></label>
+            <select id="f_campus">
+              <option value="">— Select campus —</option>
+              <option>Bangalore</option>
+              <option>Kochi</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Department Name <span class="req">*</span></label>
+            <select id="f_dept">
+              <option value="">— Select department —</option>
+              {% for d in departments %}<option>{{ d }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="ch-icon">👤</div>
+          <div>
+            <div class="ch-title">HOD Details</div>
+          </div>
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label>HOD Full Name <span class="req">*</span></label>
+            <input type="text" id="f_hod_name" placeholder="Dr. / Prof. Full Name">
+          </div>
+          <div class="field">
+            <label>HOD Email <span class="req">*</span></label>
+            <input type="email" id="f_hod_email" placeholder="hod@jainuniversity.ac.in">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="ch-icon">📅</div>
+          <div>
+            <div class="ch-title">Semester Details</div>
+          </div>
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label>Semester &amp; Year <span class="req">*</span></label>
+            <select id="f_semester">
+              <option value="">— Select —</option>
+              <option>Even 2024-25</option>
+              <option>Odd 2025-26</option>
+              <option selected>Even 2025-26</option>
+              <option>Odd 2026-27</option>
+              <option>Even 2026-27</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Academic Year <span class="req">*</span></label>
+            <input type="text" id="f_ac_year" placeholder="e.g. 2025-26">
+          </div>
+          <div class="field">
+            <label>Submission Date</label>
+            <input type="date" id="f_sub_date">
+          </div>
+          <div class="field">
+            <label>HOD Deadline</label>
+            <input type="date" id="f_hod_deadline">
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <span></span>
+        <button class="btn btn-primary" onclick="goTo(1)">Next: Snapshot →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 1: SNAPSHOT -->
+    <div class="section-page" id="page1">
+      <div class="page-heading">
+        <span class="step-badge">Step 2 of 6</span>
+        <h2>Department Snapshot</h2>
+        <p>Key numbers for this semester — used by Academic Office to cross-check and validate completeness.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="ch-icon">📊</div>
+          <div>
+            <div class="ch-title">Semester Numbers</div>
+            <div class="ch-sub">Fill from ERP / department records</div>
+          </div>
+        </div>
+        <div class="snap-grid">
+          <div class="snap-item"><label>Programs in Dept</label><input type="number" id="s_programs" min="0"
+              placeholder="0"></div>
+          <div class="snap-item"><label>Courses This Sem</label><input type="number" id="s_courses" min="0"
+              placeholder="0"></div>
+          <div class="snap-item"><label>Total Students</label><input type="number" id="s_students" min="0"
+              placeholder="0"></div>
+          <div class="snap-item"><label>Regular Faculty</label><input type="number" id="s_faculty" min="0"
+              placeholder="0"></div>
+          <div class="snap-item"><label>Adjunct / Visiting</label><input type="number" id="s_adjunct" min="0"
+              placeholder="0"></div>
+          <div class="snap-item"><label>Labs / Practicals</label><input type="number" id="s_labs" min="0"
+              placeholder="0"></div>
+          <div class="snap-item"><label>Open Electives</label><input type="number" id="s_electives" min="0"
+              placeholder="0"></div>
+          <div class="snap-item"><label>New Courses</label><input type="number" id="s_new_courses" min="0"
+              placeholder="0"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="ch-icon">✅</div>
+          <div>
+            <div class="ch-title">Readiness Validation</div>
+            <div class="ch-sub">Academic Office cross-check items</div>
+          </div>
+        </div>
+        <div style="overflow-x:auto;border-radius:8px;border:1px solid #dde3f0">
+          <table class="rs-table">
+            <thead>
+              <tr>
+                <th>Checklist Item</th>
+                <th style="width:120px">Submitted?</th>
+                <th style="width:100px">No. Pending</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Faculty Checklists (all courses)</td>
+                <td><select id="rs_fac" onchange="styleChkSel(this)">
+                    <option value="">—</option>
+                    <option>Yes</option>
+                    <option>No</option>
+                    <option>Partial</option>
+                  </select></td>
+                <td><input type="number" id="rs_fac_pend" min="0" placeholder="0"></td>
+                <td><input type="text" id="rs_fac_note" placeholder="Notes..."></td>
+              </tr>
+              <tr>
+                <td>HOD Checklist</td>
+                <td><select id="rs_hod" onchange="styleChkSel(this)">
+                    <option value="">—</option>
+                    <option>Yes</option>
+                    <option>No</option>
+                    <option>Partial</option>
+                  </select></td>
+                <td><input type="number" id="rs_hod_pend" min="0" placeholder="0"></td>
+                <td><input type="text" id="rs_hod_note" placeholder="Notes..."></td>
+              </tr>
+              <tr>
+                <td>HOD Summary (compiled)</td>
+                <td><select id="rs_sum" onchange="styleChkSel(this)">
+                    <option value="">—</option>
+                    <option>Yes</option>
+                    <option>No</option>
+                    <option>Partial</option>
+                  </select></td>
+                <td><input type="number" id="rs_sum_pend" min="0" placeholder="0"></td>
+                <td><input type="text" id="rs_sum_note" placeholder="Notes..."></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="nav-bar">
+        <button class="btn btn-ghost" onclick="goTo(0)">← Back</button>
+        <button class="btn btn-primary" onclick="goTo(2)">Next: Programs →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 2: PROGRAMS -->
+    <div class="section-page" id="page2">
+      <div class="page-heading">
+        <span class="step-badge">Step 3 of 6</span>
+        <h2>Program-wise Breakdown</h2>
+        <p>Add one row per program. Totals auto-calculate in the footer row.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="ch-icon">🎓</div>
+          <div>
+            <div class="ch-title">Programs in Department</div>
+            <div class="ch-sub">One row per program offering</div>
+          </div>
+        </div>
+        <div class="dyn-wrap">
+          <table class="dyn-table" id="progTable">
+            <thead>
+              <tr>
+                <th style="width:30px">#</th>
+                <th>Program Name</th>
+                <th style="width:90px">Courses</th>
+                <th style="width:90px">Students</th>
+                <th style="width:90px">Faculty</th>
+                <th>Program Coordinator</th>
+                <th>Coordinator Email</th>
+                <th style="width:36px"></th>
+              </tr>
+            </thead>
+            <tbody id="progBody"></tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2" style="text-align:right;color:var(--ink3);font-size:12px;font-weight:600">TOTALS →</td>
+                <td id="ft_courses" style="font-weight:800;color:var(--navy)">—</td>
+                <td id="ft_students" style="font-weight:800;color:var(--navy)">—</td>
+                <td id="ft_faculty" style="font-weight:800;color:var(--navy)">—</td>
+                <td colspan="3"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <button class="add-row-btn" onclick="addProgRow()">＋ Add Program Row</button>
+      </div>
+
+      <div class="nav-bar">
+        <button class="btn btn-ghost" onclick="goTo(1)">← Back</button>
+        <button class="btn btn-primary" onclick="goTo(3)">Next: Faculty Summary →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 3: FACULTY SUMMARY (Excel Upload) -->
+    <div class="section-page" id="page3">
+      <div class="page-heading">
+        <span class="step-badge">Step 4 of 6</span>
+        <h2>Faculty Readiness Summary</h2>
+        <p>Upload the Excel template filled by your department. Download the template, fill it in, and re-upload — no
+          manual row entry needed.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="ch-icon">📥</div>
+          <div>
+            <div class="ch-title">Step 1 — Download Template</div>
+            <div class="ch-sub">Pre-formatted Excel with all required columns</div>
+          </div>
+        </div>
+        <div class="template-bar">
+          <div>
+            <div class="tb-text">Faculty Summary Template — OoA Standard Format</div>
+            <div class="tb-sub">Columns: Faculty Name, Course, Code, TLEP, Audit, ERP Plan, LMS, Program, Year/Sem,
+              Students, Remarks</div>
+          </div>
+          <a href="/api/download-template" class="btn btn-gold" style="text-decoration:none;flex-shrink:0">⬇ Download
+            Template</a>
+        </div>
+        <p style="font-size:12px;color:var(--ink3);margin-top:8px">💡 Fill one row per faculty–course combination.
+          Allowed values for status columns: <strong>Yes / No / Pending</strong></p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="ch-icon">📤</div>
+          <div>
+            <div class="ch-title">Step 2 — Upload Filled Template</div>
+            <div class="ch-sub">Drag &amp; drop or click to browse</div>
+          </div>
+        </div>
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" id="excelFile" accept=".xlsx,.xls" onchange="handleExcelUpload(this)">
+          <span class="upload-icon">📊</span>
+          <h3>Drop your Excel file here</h3>
+          <p>Faculty_Summary_Template_OoA.xlsx<br>Supports .xlsx and .xls formats · Max 16MB</p>
+          <span class="upload-badge">📂 Browse File</span>
+        </div>
+        <div class="upload-result" id="uploadResult" style="margin-bottom: 16px;"></div>
+      </div>
+
+      <!-- Editable Table -->
+      <div class="card" id="manualFallbackCard">
+        <div class="card-header" style="justify-content: space-between;">
+          <div style="display:flex; gap: 12px;">
+            <div class="ch-icon">✏️</div>
+            <div>
+              <div class="ch-title">Faculty Summary Table <span class="req">*</span></div>
+              <div class="ch-sub">Data uploaded from Excel will appear here as editable rows</div>
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="clearUpload()"
+            style="color:var(--danger);border-color:var(--danger)">✕ Clear All Faculty Data</button>
+        </div>
+        <div class="dyn-wrap">
+          <table class="dyn-table" id="facTable">
+            <thead>
+              <tr>
+                <th style="width: 30px;">#</th>
+                <th>Faculty Name</th>
+                <th>Course</th>
+                <th>Code</th>
+                <th>TLEP?</th>
+                <th>Audited?</th>
+                <th>ERP?</th>
+                <th>LMS?</th>
+                <th>Program</th>
+                <th>Remarks</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="facBody"></tbody>
+          </table>
+        </div>
+        <button class="add-row-btn" onclick="addFacRow()">＋ Add Manual Row</button>
+      </div>
+
+      <div class="nav-bar">
+        <button class="btn btn-ghost" onclick="goTo(2)">← Back</button>
+        <button class="btn btn-primary" onclick="goTo(4)">Next: HOD Checklist →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 4: HOD CHECKLIST -->
+    <div class="section-page" id="page4">
+      <div class="page-heading">
+        <span class="step-badge">Step 5 of 6</span>
+        <h2>HOD Checklist</h2>
+        <p>Mark each of the 27 items Yes / No / N/A and add supporting notes. <span class="kochi-badge">Kochi</span>
+          items need extra verification for Kochi campus.</p>
+      </div>
+      <div class="card" id="hodChkCard"></div>
+      <div class="nav-bar">
+        <button class="btn btn-ghost" onclick="goTo(3)">← Back</button>
+        <button class="btn btn-primary" onclick="buildReview();goTo(5)">Review &amp; Submit →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 5: REVIEW -->
+    <div class="section-page" id="page5">
+      <div class="page-heading">
+        <span class="step-badge">Step 6 of 6</span>
+        <h2>Review &amp; Submit</h2>
+        <p>Verify all details before submitting. On submit, a consolidated Excel will be downloaded automatically.</p>
+      </div>
+      <div id="reviewContent"></div>
+      <div class="nav-bar">
+        <button class="btn btn-ghost" onclick="goTo(4)">← Back &amp; Edit</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-ghost" onclick="downloadExcel()">⬇ Download Excel</button>
+          <button class="btn btn-success" onclick="submitForm()">✓ Submit to Academic Office</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">🎉</div>
+      <h2>Submitted Successfully!</h2>
+      <p>Your semester readiness data has been recorded and the Excel file downloaded. The Academic Office will review
+        your submission.</p>
+      <div class="sub-list-panel">
+        <h3>Submissions This Session</h3>
+        <div id="submissionsList"></div>
+      </div>
+      <div class="succ-actions" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="window.location.reload()">Return to Dashboard</button>
+      </div>
+    </div>
+
+  </div><!-- /page-wrap -->
+
+  <div class="view-modal" id="viewModal">
+    <div class="vm-content">
+      <button class="vm-close" onclick="document.getElementById('viewModal').classList.remove('show')">✕</button>
+      <h2 style="margin-bottom: 20px; color: var(--navy); font-family: 'Playfair Display', serif;">Submission Summary
+      </h2>
+      <div id="viewModalContent"></div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ─── HOD Sections from server ───
+    const HOD_SECTIONS = {{ hod_sections | tojson }};
+
+    let uploadedFacultyRows = [];
+    let progCount = 0, facCount = 0;
+
+    let currentSubmissionId = null;
+    const USER = {{ user | tojson if user else 'null' }};
+
+    // ─── Dashboard ───
+    function doLogout() {
+      fetch('/api/logout', { method: 'POST' }).then(() => window.location.reload());
+    }
+
+    let submissionsCache = [];
+
+    if (USER) {
+      loadDashboard();
+      document.getElementById('f_hod_name').value = USER.name;
+      document.getElementById('f_hod_email').value = USER.email;
+    }
+
+    function loadDashboard() {
+      fetch('/api/my-submissions?type=readiness').then(r => r.json()).then(res => {
+        const list = document.getElementById('dashList');
+        if (!res.ok || !res.submissions || !res.submissions.length) {
+          list.innerHTML = '<div style="text-align:center; padding: 40px; background: #fff; border-radius: 12px; border: 1px dashed #c8d2e8; color: var(--ink3);">No submissions found. Start a new one!</div>';
+          return;
+        }
+        submissionsCache = res.submissions;
+        list.innerHTML = res.submissions.map(s => {
+          const dt = new Date(s.timestamp).toLocaleDateString();
+          const isLocked = s.edit_count >= 2 && (!s.edit_request || s.edit_request.status !== 'approved');
+          const isPending = s.edit_request && s.edit_request.status === 'pending';
+
+          let rightAction = '';
+          if (isLocked) {
+            if (isPending) rightAction = `<button class="btn btn-ghost" disabled>Pending Admin</button>`;
+            else rightAction = `<button class="btn btn-ghost" onclick="requestEdit('${s._id}')">Request Edit</button>`;
+          } else {
+            rightAction = `<button class="btn btn-gold" onclick="editSubmission('${s._id}')">Edit</button>`;
+          }
+
+          return `<div class="dash-card">
+            <div class="dc-left">
+              <div class="dc-title">${s.identity?.dept || 'Draft Submission'}</div>
+              <div class="dc-sub">Submitted on ${dt} · ${s.identity?.semester || ''} ${s.edit_count > 0 ? `(Edits: ${s.edit_count})` : ''}</div>
+            </div>
+            <div class="dc-right">
+              <button class="btn btn-ghost" onclick="viewSubmission('${s._id}')">View</button>
+              ${rightAction}
+            </div>
+          </div>`;
+        }).join('');
+      });
+    }
+
+    function requestEdit(id) {
+      const comment = prompt("You have reached the maximum edits for this submission.\nPlease enter a reason to request edit access from the Admin:");
+      if (comment === null) return;
+      fetch('/api/request-edit/' + id, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment })
+      }).then(r => r.json()).then(res => {
+        if (res.ok) {
+          showToast('Request sent to admin');
+          loadDashboard();
+        } else {
+          showToast('Failed to send request');
+        }
+      });
+    }
+
+    function startNewForm() {
+      document.getElementById('dashView').style.display = 'none';
+      document.getElementById('formView').style.display = 'block';
+      document.getElementById('mainProgBar').style.display = 'flex';
+      currentSubmissionId = null;
+    }
+
+    function editSubmission(id) {
+      const d = submissionsCache.find(x => x._id === id);
+      if (!d) return;
+      currentSubmissionId = id;
+
+      if (d.identity) {
+        setVal('f_campus', d.identity.campus);
+        setVal('f_dept', d.identity.dept);
+        setVal('f_hod_name', d.identity.hodName);
+        setVal('f_semester', d.identity.semester);
+        setVal('f_ac_year', d.identity.acYear);
+      }
+
+      if (d.snapshot) {
+        setVal('s_programs', d.snapshot.programs);
+        setVal('s_courses', d.snapshot.courses);
+        setVal('s_students', d.snapshot.students);
+        setVal('s_faculty', d.snapshot.faculty);
+        setVal('s_adjunct', d.snapshot.adjunct);
+        setVal('s_labs', d.snapshot.labs);
+        setVal('s_electives', d.snapshot.electives);
+        setVal('s_new_courses', d.snapshot.newCourses);
+      }
+
+      if (d.readinessStatus) {
+        const rs = d.readinessStatus;
+        if (rs.faculty) { setVal('rs_fac', rs.faculty.submitted); setVal('rs_fac_pend', rs.faculty.pending); setVal('rs_fac_note', rs.faculty.notes); }
+        if (rs.hod) { setVal('rs_hod', rs.hod.submitted); setVal('rs_hod_pend', rs.hod.pending); setVal('rs_hod_note', rs.hod.notes); }
+        if (rs.summary) { setVal('rs_sum', rs.summary.submitted); setVal('rs_sum_pend', rs.summary.pending); setVal('rs_sum_note', rs.summary.notes); }
+
+        ['rs_fac', 'rs_hod', 'rs_sum'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) styleChkSel(el);
+        });
+      }
+
+      if (d.programs && d.programs.length > 0) {
+        document.getElementById('progBody').innerHTML = '';
+        progCount = 0;
+        d.programs.forEach(p => {
+          addProgRow();
+          const trs = document.querySelectorAll('#progBody tr');
+          const lastTr = trs[trs.length - 1];
+          lastTr.querySelector('.prog-name').value = p.name || '';
+          lastTr.querySelector('.prog-courses').value = p.courses || '';
+          lastTr.querySelector('.prog-students').value = p.students || '';
+          lastTr.querySelector('.prog-faculty').value = p.faculty || '';
+          lastTr.querySelector('.prog-coord').value = p.coord || '';
+          lastTr.querySelector('.prog-coord-email').value = p.coordEmail || '';
+        });
+        updateProgTotals();
+      }
+
+      if (d.facultySummary && d.facultySummary.length > 0) {
+        document.getElementById('facBody').innerHTML = '';
+        facCount = 0;
+        d.facultySummary.forEach(r => addFacRow(r));
+      }
+
+      if (d.hodChecklist) {
+        for (const [id, val] of Object.entries(d.hodChecklist)) {
+          const sel = document.getElementById('chk_' + id);
+          if (sel) {
+            sel.value = val.status || '';
+            styleChkSel(sel);
+          }
+          const rem = document.getElementById('rem_' + id);
+          if (rem) {
+            rem.value = val.remark || '';
+          }
+        }
+      }
+
+      document.getElementById('dashView').style.display = 'none';
+      document.getElementById('formView').style.display = 'block';
+      document.getElementById('mainProgBar').style.display = 'flex';
+      showToast('Form auto-filled for editing');
+    }
+
+    function viewSubmission(id) {
+      const d = submissionsCache.find(x => x._id === id);
+      if (!d) return;
+      const modal = document.getElementById('viewModal');
+      const content = document.getElementById('viewModalContent');
+      content.innerHTML = generateReviewHTML(d);
+      modal.classList.add('show');
+    }
+
+    function setVal(id, val) {
+      const el = document.getElementById(id);
+      if (el && val !== undefined) el.value = val;
+    }
+
+    // ─── Drag-and-drop ───
+    const uz = document.getElementById('uploadZone');
+    uz.addEventListener('dragover', e => { e.preventDefault(); uz.classList.add('dragover'); });
+    uz.addEventListener('dragleave', () => uz.classList.remove('dragover'));
+    uz.addEventListener('drop', e => {
+      e.preventDefault(); uz.classList.remove('dragover');
+      const f = e.dataTransfer.files[0];
+      if (f) handleFileUpload(f);
+    });
+
+    function handleExcelUpload(input) {
+      if (input.files[0]) handleFileUpload(input.files[0]);
+    }
+
+    function handleFileUpload(file) {
+      const res = document.getElementById('uploadResult');
+      res.style.display = 'block';
+      res.className = 'upload-result';
+      res.textContent = '⏳ Parsing Excel file…';
+
+      const fd = new FormData();
+      fd.append('file', file);
+      fetch('/api/parse-excel', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(data => {
+          if (!data.ok) {
+            res.className = 'upload-result error';
+            res.textContent = '✕ Error: ' + data.error;
+            return;
+          }
+          res.className = 'upload-result';
+          res.textContent = `✓ Successfully loaded ${data.count} faculty row(s) from "${file.name}". They have been appended below.`;
+          data.rows.forEach(r => addFacRow(r));
+          document.getElementById('excelFile').value = '';
+        })
+        .catch(e => {
+          res.className = 'upload-result error';
+          res.textContent = '✕ Upload failed: ' + e.message;
+        });
+    }
+
+    function statusPillHTML(val) {
+      if (!val || val === 'None') return '<span class="status-pill sp-blank">—</span>';
+      const v = val.toLowerCase();
+      if (v === 'yes') return '<span class="status-pill sp-yes">✓ Yes</span>';
+      if (v === 'no') return '<span class="status-pill sp-no">✗ No</span>';
+      if (v.includes('pend')) return '<span class="status-pill sp-pending">⏳</span>';
+      return `<span class="status-pill sp-blank">${val}</span>`;
+    }
+
+    function clearUpload() {
+      document.getElementById('uploadResult').style.display = 'none';
+      document.getElementById('excelFile').value = '';
+      document.getElementById('facBody').innerHTML = '';
+      facCount = 0;
+    }
+
+    // ─── Checklist ───
+    function buildHodChecklist() {
+      const card = document.getElementById('hodChkCard');
+      let html = '<div class="card-header"><div class="ch-icon">📋</div><div><div class="ch-title">27-Point HOD Readiness Checklist</div><div class="ch-sub">Mark each item before submitting</div></div></div>';
+      HOD_SECTIONS.forEach(sec => {
+        html += `<div class="chk-section-title">${sec.title}</div>`;
+        sec.items.forEach(item => {
+          html += `<div class="chk-row">
+        <span class="chk-num">${item.id}</span>
+        <span class="chk-text">${item.text}${item.kochi ? '<span class="kochi-badge">Kochi</span>' : ''}</span>
+        <select class="chk-sel" id="chk_${item.id}" onchange="styleChkSel(this)">
+          <option value="">— select —</option>
+          <option value="Yes">Yes</option><option value="No">No</option><option value="N/A">N/A</option>
+        </select>
+        <div style="display:flex;gap:4px;flex:1">
+            <input class="chk-remark" type="text" id="rem_${item.id}" placeholder="Drive link or notes" style="flex:1">
+            <button class="btn btn-ghost" title="Upload File" style="padding:0 12px;font-size:16px;height:36px;border:1px solid #dde3f0" onclick="document.getElementById('file_${item.id}').click()">📎</button>
+            <input type="file" id="file_${item.id}" style="display:none" onchange="uploadEvidence(this, '${item.id}')">
+        </div>
+      </div>`;
+        });
+      });
+      card.innerHTML = html;
+    }
+
+    function uploadEvidence(input, id) {
+      if (!input.files || !input.files[0]) return;
+      const file = input.files[0];
+      const fd = new FormData();
+      fd.append('file', file);
+
+      const btn = input.previousElementSibling;
+      const originalText = btn.textContent;
+      btn.textContent = '⏳';
+
+      fetch('/api/upload-evidence', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok) {
+            const rem = document.getElementById('rem_' + id);
+            rem.value = (rem.value ? rem.value + ' | ' : '') + res.url;
+            btn.textContent = '✓';
+            setTimeout(() => btn.textContent = originalText, 2000);
+          } else {
+            showToast('Upload failed: ' + res.error);
+            btn.textContent = originalText;
+          }
+        })
+        .catch(err => {
+          showToast('Upload error');
+          btn.textContent = originalText;
+        });
+    }
+
+    function styleChkSel(sel) {
+      sel.className = sel.className.replace(/\b(yes|no|na)\b/g, '').trim();
+      const v = sel.value;
+      if (v === 'Yes') sel.classList.add('yes');
+      else if (v === 'No') sel.classList.add('no');
+      else if (v === 'N/A') sel.classList.add('na');
+    }
+
+    // ─── Programs ───
+    function addProgRow() {
+      progCount++;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+    <td style="text-align:center;color:var(--ink3);font-size:12px;font-weight:700">${progCount}</td>
+    <td><input type="text" placeholder="e.g. B.Tech CSE" class="prog-name"></td>
+    <td><input type="number" min="0" placeholder="0" class="prog-courses" oninput="updateProgTotals()"></td>
+    <td><input type="number" min="0" placeholder="0" class="prog-students" oninput="updateProgTotals()"></td>
+    <td><input type="number" min="0" placeholder="0" class="prog-faculty" oninput="updateProgTotals()"></td>
+    <td><input type="text" placeholder="Coordinator name" class="prog-coord"></td>
+    <td><input type="email" placeholder="Email" class="prog-coord-email"></td>
+    <td><button class="del-btn" onclick="this.closest('tr').remove();updateProgTotals()" title="Remove">×</button></td>`;
+      document.getElementById('progBody').appendChild(tr);
+      updateProgTotals();
+    }
+
+    function updateProgTotals() {
+      const sum = cls => [...document.querySelectorAll('.' + cls)].reduce((a, el) => a + (+el.value || 0), 0);
+      const c = sum('prog-courses'), s = sum('prog-students'), f = sum('prog-faculty');
+      document.getElementById('ft_courses').textContent = c || '—';
+      document.getElementById('ft_students').textContent = s || '—';
+      document.getElementById('ft_faculty').textContent = f || '—';
+    }
+
+    // ─── Faculty manual ───
+    function mkSel(cls, selVal) {
+      const v = (selVal || '').toLowerCase();
+      const selected = (o) => (o.toLowerCase() === v || (o === 'Pending' && v.includes('pend'))) ? 'selected' : '';
+      return `<select class="chk-sel ${cls}" onchange="styleChkSel(this)">
+    <option value="">—</option><option value="Yes" ${selected('yes')}>Yes</option>
+    <option value="No" ${selected('no')}>No</option><option value="Pending" ${selected('pending')}>Pending</option></select>`;
+    }
+
+    function addFacRow(data = {}) {
+      facCount++;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+    <td style="text-align:center;color:var(--ink3);font-size:12px;font-weight:700">${facCount}</td>
+    <td><input type="text" placeholder="Faculty name" class="fac-name" value="${data.name || ''}"></td>
+    <td><input type="text" placeholder="Course name" class="fac-course" value="${data.course || ''}"></td>
+    <td><input type="text" placeholder="Code" class="fac-code" value="${data.code || ''}"></td>
+    <td>${mkSel('fac-tlep', data.tlep)}</td><td>${mkSel('fac-audited', data.audited)}</td>
+    <td>${mkSel('fac-erp', data.erp)}</td><td>${mkSel('fac-lms', data.lms)}</td>
+    <td><input type="text" placeholder="Program" class="fac-prog" value="${data.program || ''}"></td>
+    <td><input type="text" placeholder="Remarks" class="fac-remark" value="${data.remarks || ''}"></td>
+    <td><button class="del-btn" onclick="this.closest('tr').remove()" title="Remove">×</button></td>`;
+      document.getElementById('facBody').appendChild(tr);
+
+      tr.querySelectorAll('select').forEach(sel => styleChkSel(sel));
+    }
+
+    // ─── Navigation ───
+    function goTo(step) {
+      document.querySelectorAll('.section-page').forEach((p, i) => p.classList.toggle('active', i === step));
+      document.querySelectorAll('.ps').forEach((p, i) => {
+        p.classList.remove('active', 'done');
+        if (i === step) p.classList.add('active');
+        else if (i < step) p.classList.add('done');
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ─── Data collection ───
+    const v = id => (document.getElementById(id) || {}).value || '';
+
+    function collectData() {
+      const progs = [];
+      document.querySelectorAll('#progBody tr').forEach(tr => {
+        const name = tr.querySelector('.prog-name')?.value || '';
+        if (name) progs.push({
+          name, courses: tr.querySelector('.prog-courses')?.value || '',
+          students: tr.querySelector('.prog-students')?.value || '',
+          faculty: tr.querySelector('.prog-faculty')?.value || '',
+          coord: tr.querySelector('.prog-coord')?.value || '',
+          coordEmail: tr.querySelector('.prog-coord-email')?.value || ''
+        });
+      });
+
+      let facs = [];
+      document.querySelectorAll('#facBody tr').forEach(tr => {
+        const name = tr.querySelector('.fac-name')?.value || '';
+        if (name) facs.push({
+          name, course: tr.querySelector('.fac-course')?.value || '',
+          code: tr.querySelector('.fac-code')?.value || '',
+          tlep: tr.querySelector('.fac-tlep')?.value || '',
+          audited: tr.querySelector('.fac-audited')?.value || '',
+          erp: tr.querySelector('.fac-erp')?.value || '',
+          lms: tr.querySelector('.fac-lms')?.value || '',
+          program: tr.querySelector('.fac-prog')?.value || '',
+          yearSem: '', students: '', remarks: tr.querySelector('.fac-remark')?.value || ''
+        });
+      });
+
+      const chk = {};
+      HOD_SECTIONS.forEach(sec => sec.items.forEach(item => {
+        chk[item.id] = { status: v(`chk_${item.id}`), remark: v(`rem_${item.id}`) };
+      }));
+
+      const uEmail = USER ? USER.email : '';
+      const uName = USER ? USER.name : '';
+
+      const payload = {
+        identity: {
+          submitterEmail: uEmail,
+          submitterName: uName,
+          campus: v('f_campus'), dept: v('f_dept'), hodName: v('f_hod_name'),
+          hodEmail: v('f_hod_email'), semester: v('f_semester'), acYear: v('f_ac_year'),
+          subDate: v('f_sub_date'), hodDeadline: v('f_hod_deadline')
+        },
+        snapshot: {
+          programs: v('s_programs'), courses: v('s_courses'), students: v('s_students'),
+          faculty: v('s_faculty'), adjunct: v('s_adjunct'), labs: v('s_labs'),
+          electives: v('s_electives'), newCourses: v('s_new_courses')
+        },
+        readinessStatus: {
+          faculty: { submitted: v('rs_fac'), pending: v('rs_fac_pend'), notes: v('rs_fac_note') },
+          hod: { submitted: v('rs_hod'), pending: v('rs_hod_pend'), notes: v('rs_hod_note') },
+          summary: { submitted: v('rs_sum'), pending: v('rs_sum_pend'), notes: v('rs_sum_note') }
+        },
+        programs: progs, facultySummary: facs, hodChecklist: chk, form_type: 'readiness'
+      };
+
+      if (currentSubmissionId) payload._id = currentSubmissionId;
+      return payload;
+    }
+
+    // ─── Review builder ───
+    function pill(val) {
+      if (!val) return '<span class="pill p-blank">—</span>';
+      if (val === 'Yes') return '<span class="pill p-yes">✓ Yes</span>';
+      if (val === 'No') return '<span class="pill p-no">✗ No</span>';
+      if (val === 'Pending') return '<span class="pill p-pend">⏳ Pending</span>';
+      return `<span class="pill p-blank">${val}</span>`;
+    }
+
+    function buildReview() {
+      const d = collectData();
+      document.getElementById('reviewContent').innerHTML = generateReviewHTML(d);
+    }
+
+    function generateReviewHTML(d) {
+      const vals = d.hodChecklist ? Object.values(d.hodChecklist) : [];
+      const yesN = vals.filter(x => x.status === 'Yes').length;
+      const noN = vals.filter(x => x.status === 'No').length;
+      const allItems = HOD_SECTIONS.flatMap(s => s.items);
+
+      return `
+  <div class="rev-block">
+    <div class="rev-header">Department Identity<span class="rev-badge">${d.identity?.campus || '—'}</span></div>
+    <div class="rev-body">
+      <div class="rb-row"><span class="rb-label">Department</span><span class="rb-val">${d.identity?.dept || '—'}</span></div>
+      <div class="rb-row"><span class="rb-label">HOD</span><span class="rb-val">${d.identity?.hodName || '—'} · ${d.identity?.hodEmail || '—'}</span></div>
+      <div class="rb-row"><span class="rb-label">Semester</span><span class="rb-val">${d.identity?.semester || '—'} · A.Y. ${d.identity?.acYear || '—'}</span></div>
+    </div>
+  </div>
+  <div class="rev-block">
+    <div class="rev-header">Department Snapshot</div>
+    <div class="rev-body"><div class="metric-chips">
+      <div class="chip"><b>${d.snapshot?.programs || '—'}</b> programs</div>
+      <div class="chip"><b>${d.snapshot?.courses || '—'}</b> courses</div>
+      <div class="chip"><b>${d.snapshot?.students || '—'}</b> students</div>
+      <div class="chip"><b>${d.snapshot?.faculty || '—'}</b> faculty</div>
+      <div class="chip"><b>${d.snapshot?.adjunct || '—'}</b> adjunct</div>
+      <div class="chip"><b>${d.snapshot?.labs || '—'}</b> labs</div>
+      <div class="chip"><b>${d.snapshot?.electives || '—'}</b> electives</div>
+      <div class="chip"><b>${d.snapshot?.newCourses || '—'}</b> new courses</div>
+    </div></div>
+  </div>
+  <div class="rev-block">
+    <div class="rev-header">Programs <span class="rev-badge">${d.programs?.length || 0} added</span></div>
+    <div class="rev-body">
+      ${d.programs && d.programs.length ? d.programs.map(p => `<div class="rb-row"><span class="rb-label">${p.name}</span><span class="rb-val" style="font-size:13px">${p.courses || '?'} courses · ${p.students || '?'} students · ${p.faculty || '?'} faculty · <span style="color:var(--ink3)">Coord: ${p.coord || '—'} ${p.coordEmail ? `(${p.coordEmail})` : ''}</span></span></div>`).join('') : '<span style="color:var(--ink3)">No programs entered</span>'}
+    </div>
+  </div>
+  <div class="rev-block">
+    <div class="rev-header">Faculty Summary <span class="rev-badge">${d.facultySummary?.length || 0} rows</span></div>
+    <div class="rev-body">
+      ${d.facultySummary && d.facultySummary.length ? d.facultySummary.slice(0, 8).map(f => `<div style="margin-bottom:5px;font-size:13px"><strong>${f.name}</strong> — ${f.course} <span style="color:var(--ink3)">(${f.code || '—'})</span> TLEP:${pill(f.tlep)} Audit:${pill(f.audited)} ERP:${pill(f.erp)} LMS:${pill(f.lms)}</div>`).join('') + (d.facultySummary && d.facultySummary.length > 8 ? `<div style="color:var(--ink3);font-size:12px;margin-top:6px">… and ${d.facultySummary.length - 8} more rows</div>` : '') : '<span style="color:var(--ink3)">No faculty data entered</span>'}
+    </div>
+  </div>
+  <div class="rev-block">
+    <div class="rev-header">HOD Checklist <span class="rev-badge">${yesN}/27 Yes · ${noN} gaps</span></div>
+    <div class="rev-body">
+      ${noN > 0 ? `<div class="gap-list"><strong style="color:var(--danger)">⚠ ${noN} item(s) marked No:</strong><br>${allItems.filter(i => d.hodChecklist && d.hodChecklist[i.id]?.status === 'No').map(i => `<div class="gap-item">• ${i.id}. ${i.text}</div>`).join('')}</div>` : '<span style="color:var(--success)">✓ No items marked No — checklist looks complete</span>'}
+    </div>
+  </div>`;
+    }
+
+    // ─── Submit ───
+    function downloadExcel() {
+      const d = collectData();
+      showToast('Downloading Excel…');
+      // Use backend for Excel gen — just trigger submit flow for single dept
+      const form = document.createElement('form');
+      form.method = 'GET';
+      form.action = '/api/export-preview';
+      document.body.appendChild(form);
+      // We'll just show toast for now since export needs saved ID
+      showToast('Please submit first, then download from admin panel');
+    }
+
+    function submitForm() {
+      const d = collectData();
+      if (!d.identity.campus || !d.identity.dept || !d.identity.hodName) {
+        showToast('⚠ Please fill Campus, Department & HOD Name (Step 1)'); return;
+      }
+      if (d.facultySummary.length === 0) {
+        showToast('⚠ Faculty Summary is mandatory. Please add at least one faculty row.'); return;
+      }
+      const noN = Object.values(d.hodChecklist).filter(x => x.status === 'No').length;
+      if (noN > 0 && !confirm(`${noN} checklist item(s) are marked "No". Submit anyway?`)) return;
+
+      fetch('/api/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(d)
+      })
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok) {
+            showSuccessScreen(d, res.id);
+          } else {
+            showToast('⚠ Submission failed. Please try again.');
+          }
+        })
+        .catch(() => showToast('⚠ Network error. Check connection.'));
+    }
+
+    function showSuccessScreen(d, id) {
+      document.querySelectorAll('.section-page').forEach(p => p.classList.remove('active'));
+      document.getElementById('successScreen').classList.add('active');
+      const succActions = document.querySelector('.succ-actions');
+      if (succActions) {
+        succActions.innerHTML = `<button class="btn btn-primary" onclick="window.location.href='/'">Return to Dashboard</button>`;
+      }
+      document.getElementById('submissionsList').innerHTML = `
+    <div class="sub-entry">
+      <div><span class="sub-dept">${d.identity.dept}</span><span style="color:var(--ink3);font-size:12px"> — ${d.identity.campus} · HOD: ${d.identity.hodName}</span></div>
+      <span style="color:var(--success);font-size:12px;font-weight:700">✓ Submitted</span>
+    </div>`;
+    }
+
+    // ─── Toast ───
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3200);
+    }
+
+    // ─── Init ───
+    buildHodChecklist();
+    addProgRow(); addProgRow();
+    document.getElementById('f_sub_date').value = new Date().toISOString().split('T')[0];
+  </script>
+</body>
+
+</html>

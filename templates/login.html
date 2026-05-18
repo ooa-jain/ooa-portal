@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Semester Readiness Portal</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --navy: #0a2558;
+      --navy2: #143572;
+      --gold: #f2a900;
+      --bg: #ffffff;
+      --ink: #111827;
+      --ink2: #374151;
+      --ink3: #6b7280;
+      --danger: #dc2626;
+      --r: 12px;
+      --sh2: 0 12px 48px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(rgba(10, 37, 88, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 37, 88, 0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    .auth-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .auth-box {
+      background: #fff;
+      border-radius: var(--r);
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: var(--sh2);
+    }
+
+    .auth-tabs {
+      display: flex;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #e8ecf5;
+    }
+
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink3);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+    }
+
+    .auth-tab.active {
+      color: var(--navy);
+      border-bottom-color: var(--navy);
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink2);
+      margin-bottom: 6px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #dde3f0;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: 0.15s;
+    }
+
+    .field input:focus {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(10, 37, 88, 0.1);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: 0.2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .btn-primary {
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--navy2);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--ink);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 9999;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .req {
+      color: var(--danger);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div style="text-align: center; margin-bottom: 32px;">
+        <img src="/static/images/jain.png" alt="Jain University" style="height: 60px; margin-bottom: 16px;"
+          onerror="this.style.display='none'">
+        <div style="font-weight: 700; color: var(--navy); font-size: 15px; letter-spacing: 0.02em;">JAIN (Deemed-to-be
+          University)</div>
+        <h2 style="font-size: 22px; margin-bottom: 0; margin-top: 6px;">Office of Academics</h2>
+      </div>
+
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tabLogin" onclick="switchAuth('login')">Login</div>
+        <div class="auth-tab" id="tabRegister" onclick="switchAuth('register')">New User</div>
+      </div>
+
+      <div id="authLogin">
+        <div class="field" style="margin-bottom: 20px;">
+          <label>Your Mail ID <span class="req">*</span></label>
+          <input type="email" id="auth_l_email" placeholder="you@jainuniversity.ac.in"
+            onkeydown="if(event.key==='Enter') doLogin()">
+        </div>
+        <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="doLogin()">Login</button>
+      </div>
+
+      <div id="authRegister" style="display: none;">
+        <div class="field" style="margin-bottom: 16px;">
+          <label>Your Name <span class="req">*</span></label>
+          <input type="text" id="auth_r_name" placeholder="Full Name">
+        </div>
+        <div class="field" style="margin-bottom: 20px;">
+          <label>Your Mail ID <span class="req">*</span></label>
+          <input type="email" id="auth_r_email" placeholder="you@jainuniversity.ac.in"
+            onkeydown="if(event.key==='Enter') doRegister()">
+        </div>
+        <button class="btn btn-primary" style="width: 100%; justify-content: center;"
+          onclick="doRegister()">Register</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function switchAuth(tab) {
+      document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+      document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+      document.getElementById('authLogin').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('authRegister').style.display = tab === 'register' ? 'block' : 'none';
+    }
+
+    function doLogin() {
+      const email = document.getElementById('auth_l_email').value.trim();
+      if (!email) { showToast('Email required'); return; }
+      fetch('/api/login', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      }).then(r => r.json()).then(res => {
+        if (res.ok) window.location.href = '/';
+        else showToast('⚠ ' + res.error);
+      });
+    }
+
+    function doRegister() {
+      const name = document.getElementById('auth_r_name').value.trim();
+      const email = document.getElementById('auth_r_email').value.trim();
+      if (!name || !email) { showToast('Name and Email required'); return; }
+      fetch('/api/register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email })
+      }).then(r => r.json()).then(res => {
+        if (res.ok) window.location.href = '/';
+        else showToast('⚠ ' + res.error);
+      });
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+
+</html>

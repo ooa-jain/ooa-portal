@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Admin Dashboard — OoA Semester Readiness</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --navy: #0A2558;
+      --navy2: #0d3070;
+      --navy3: #1a4a9a;
+      --gold: #F4A819;
+      --gold2: #e8950a;
+      --orange: #E85C1A;
+      --ink: #1a1e2e;
+      --ink2: #3d4460;
+      --ink3: #8892aa;
+      --bg: #f0f3fa;
+      --bg2: #fff;
+      --border: #dde3f0;
+      --success: #1a7a4a;
+      --danger: #c0392b;
+      --r: 12px;
+      --r2: 8px;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh
+    }
+
+    .topbar {
+      background: var(--navy);
+      padding: 0;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, .25);
+      position: sticky;
+      top: 0;
+      z-index: 100
+    }
+
+    .topbar-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      height: 62px
+    }
+
+    .tbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .tbar-brand img {
+      height: 38px;
+      object-fit: contain
+    }
+
+    .tbar-brand .tb-div {
+      width: 1px;
+      height: 30px;
+      background: rgba(255, 255, 255, .2)
+    }
+
+    .tbar-brand h1 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff
+    }
+
+    .tbar-brand p {
+      font-size: 10.5px;
+      color: var(--gold);
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      margin-top: 1px
+    }
+
+    .tbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .wrap {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 32px 28px 80px
+    }
+
+    .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 99px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em
+    }
+
+    /* Stats */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px
+    }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 20px 22px;
+      box-shadow: 0 2px 12px rgba(10, 37, 88, .07)
+    }
+
+    .stat-card .sv {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--navy)
+    }
+
+    .stat-card .sl {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink3);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      margin-top: 4px
+    }
+
+    .stat-card .ss {
+      font-size: 12px;
+      color: var(--ink3);
+      margin-top: 2px
+    }
+
+    .stat-card.gold .sv {
+      color: var(--gold2)
+    }
+
+    .stat-card.orange .sv {
+      color: var(--orange)
+    }
+
+    .stat-card.green .sv {
+      color: var(--success)
+    }
+
+    /* Table */
+    .table-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      box-shadow: 0 2px 16px rgba(10, 37, 88, .07);
+      overflow: hidden
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 2px solid var(--bg);
+      flex-wrap: wrap;
+      gap: 12px
+    }
+
+    .table-header h2 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy)
+    }
+
+    .table-header p {
+      font-size: 12.5px;
+      color: var(--ink3);
+      margin-top: 2px
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .search-bar input {
+      padding: 9px 14px;
+      border: 2px solid var(--border);
+      border-radius: var(--r2);
+      font-size: 13px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      outline: none;
+      min-width: 240px;
+      background: #fafbff;
+      transition: .15s
+    }
+
+    .search-bar input:focus {
+      border-color: var(--navy3);
+      background: #fff
+    }
+
+    .sub-table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    .sub-table thead th {
+      background: var(--navy);
+      color: #fff;
+      padding: 11px 12px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      white-space: nowrap
+    }
+
+    .sub-table tbody tr {
+      border-bottom: 1px solid #f0f3fb;
+      transition: .1s
+    }
+
+    .sub-table tbody tr:hover {
+      background: #f5f8ff
+    }
+
+    .sub-table td {
+      padding: 12px 12px;
+      font-size: 13px;
+      vertical-align: middle
+    }
+
+    .campus-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700
+    }
+
+    .cb-blr {
+      background: #e8f0ff;
+      color: var(--navy)
+    }
+
+    .cb-kch {
+      background: #fff3e0;
+      color: #8a4a00
+    }
+
+    .status-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block
+    }
+
+    .dot-green {
+      background: var(--success)
+    }
+
+    .dot-red {
+      background: var(--danger)
+    }
+
+    .dot-amber {
+      background: var(--gold2)
+    }
+
+    .checklist-bar {
+      width: 120px;
+      background: #edf0f8;
+      border-radius: 99px;
+      height: 7px;
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: middle
+    }
+
+    .checklist-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--navy3), var(--gold))
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      border-radius: var(--r2);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 2px solid;
+      transition: .15s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      text-decoration: none
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px
+    }
+
+    .btn-ghost {
+      border-color: #c8d2e8;
+      background: transparent;
+      color: var(--ink2)
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg);
+      border-color: var(--navy)
+    }
+
+    .btn-primary {
+      border-color: var(--navy);
+      background: var(--navy);
+      color: #fff
+    }
+
+    .btn-primary:hover {
+      background: var(--navy2)
+    }
+
+    .btn-gold {
+      border-color: var(--gold2);
+      background: var(--gold);
+      color: var(--navy)
+    }
+
+    .btn-gold:hover {
+      background: var(--gold2)
+    }
+
+    .btn-danger {
+      border-color: #c0392b;
+      background: transparent;
+      color: #c0392b
+    }
+
+    .btn-danger:hover {
+      background: #c0392b;
+      color: #fff
+    }
+
+    .btn-white {
+      border-color: rgba(255, 255, 255, .3);
+      background: rgba(255, 255, 255, .1);
+      color: #fff
+    }
+
+    .btn-white:hover {
+      background: rgba(255, 255, 255, .2)
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--ink3)
+    }
+
+    .no-data .nd-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      display: block
+    }
+
+    .no-data h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--ink2)
+    }
+
+    .no-data p {
+      font-size: 13.5px;
+      line-height: 1.6
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 37, 88, .6);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 20px
+    }
+
+    .modal-overlay.open {
+      display: flex
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 700px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .35)
+    }
+
+    .modal h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 20px;
+      font-family: 'Playfair Display', serif
+    }
+
+    .modal-close {
+      float: right;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--ink3);
+      line-height: 1;
+      padding: 0 4px
+    }
+
+    .modal-close:hover {
+      color: var(--danger)
+    }
+
+    .mod-section {
+      margin-bottom: 20px
+    }
+
+    .mod-section h4 {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      border-bottom: 2px solid #f0f3fb;
+      padding-bottom: 8px;
+      margin-bottom: 10px
+    }
+
+    .mod-row {
+      display: flex;
+      gap: 10px;
+      font-size: 13.5px;
+      padding: 5px 0;
+      border-bottom: 1px solid #f8f9fb
+    }
+
+    .mod-label {
+      color: var(--ink3);
+      font-size: 12px;
+      min-width: 130px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      flex-shrink: 0
+    }
+
+    .mod-val {
+      font-weight: 600;
+      color: var(--ink);
+      flex: 1
+    }
+
+    .chk-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px
+    }
+
+    .chk-item {
+      font-size: 11.5px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      font-weight: 600
+    }
+
+    .ci-yes {
+      background: #e8f7ee;
+      color: #0f5a2a
+    }
+
+    .ci-no {
+      background: #fde8e8;
+      color: #7a1a1a
+    }
+
+    .ci-na {
+      background: #f0f0f0;
+      color: #666
+    }
+
+    .ci-blank {
+      background: #f8f8f8;
+      color: #aaa
+    }
+
+    /* Pagination */
+    .pag {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 22px;
+      border-top: 1px solid var(--border)
+    }
+
+    .pag-info {
+      font-size: 13px;
+      color: var(--ink3);
+      font-weight: 500
+    }
+
+    @media(max-width:900px) {
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media(max-width:600px) {
+      .stats-row {
+        grid-template-columns: 1fr
+      }
+
+      .wrap {
+        padding: 20px 16px
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="tbar-brand">
+        <img src="/static/img/jain.png" alt="Jain" onerror="this.style.display='none'">
+        <div class="tb-div"></div>
+        <div>
+          <h1>Admin Dashboard</h1>
+          <p>Office of Academics — OoA</p>
+        </div>
+      </div>
+      <div class="tbar-actions">
+        <a href="/" class="btn btn-white btn-sm">← Form</a>
+        <a href="/admin/export-all" class="btn btn-gold btn-sm">⬇ Export All Excel</a>
+        <a href="/admin/logout" class="btn btn-ghost btn-sm" style="color:#fff;border-color:rgba(255,255,255,.3)">Sign
+          Out</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <span class="admin-badge">🔒 Admin Panel</span>
+
+    {% set total = submissions|length %}
+    {% set blr = submissions|selectattr('identity.campus','equalto','Bangalore')|list|length %}
+    {% set kochi = submissions|selectattr('identity.campus','equalto','Kochi')|list|length %}
+
+    <div class="table-card" style="margin-bottom: 32px;">
+      <div class="table-header" style="border-bottom: none; padding-bottom: 0;">
+        <div>
+          <h2>Portal Settings</h2>
+          <p>Enable/disable modules and set submission deadlines</p>
+        </div>
+      </div>
+      <div style="padding: 18px 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div style="background: #fafbff; padding: 16px; border: 1px solid var(--border); border-radius: var(--r2);">
+          <h3 style="font-size: 14px; margin-bottom: 12px; color: var(--navy);">Semester Readiness</h3>
+          <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; font-weight: 600;">
+            <input type="checkbox" id="set_readiness_enabled" {% if settings.readiness_enabled %}checked{% endif %}>
+            Enable Module
+          </label>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 11px; font-weight: 700; color: var(--ink3);">Deadline Notice</label>
+            <input type="datetime-local" id="set_readiness_deadline" value="{{ settings.readiness_deadline }}" placeholder="e.g. 5 PM today" style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit;">
+          </div>
+        </div>
+        
+        <div style="background: #fafbff; padding: 16px; border: 1px solid var(--border); border-radius: var(--r2);">
+          <h3 style="font-size: 14px; margin-bottom: 12px; color: var(--navy);">Semester Closure</h3>
+          <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; font-weight: 600;">
+            <input type="checkbox" id="set_closure_enabled" {% if settings.closure_enabled %}checked{% endif %}>
+            Enable Module
+          </label>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 11px; font-weight: 700; color: var(--ink3);">Deadline Notice</label>
+            <input type="datetime-local" id="set_closure_deadline" value="{{ settings.closure_deadline }}" placeholder="e.g. extended to 5 PM" style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit;">
+          </div>
+        </div>
+      </div>
+      <div style="padding: 0 22px 18px; text-align: right;">
+        <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="sv">{{ total }}</div>
+        <div class="sl">Total Submissions</div>
+        <div class="ss">All departments</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="sv">{{ blr }}</div>
+        <div class="sl">Bangalore</div>
+        <div class="ss">Campus submissions</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="sv">{{ kochi }}</div>
+        <div class="sl">Kochi</div>
+        <div class="ss">Campus submissions</div>
+      </div>
+      <div class="stat-card green">
+        <div class="sv">{{ (submissions|map(attribute='facultySummary')|map('length')|sum) }}</div>
+        <div class="sl">Faculty Rows</div>
+        <div class="ss">Across all departments</div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <div>
+          <h2>All Submissions</h2>
+          <p>{{ total }} department(s) have submitted their semester readiness form</p>
+        </div>
+        <div class="search-bar">
+          <select id="subDeptFilter" onchange="filterTable()" style="padding: 9px 14px; border: 2px solid var(--border); border-radius: var(--r2); font-size: 13px; outline: none; background: #fafbff; cursor: pointer;">
+            <option value="">All Departments</option>
+            {% for dept in departments %}
+            <option value="{{ dept }}">{{ dept }}</option>
+            {% endfor %}
+          </select>
+          <input type="text" id="searchInput" placeholder="🔍 Search dept, Name, Email…" oninput="filterTable()">
+        </div>
+      </div>
+
+      {% if submissions %}
+      <div style="overflow-x:auto">
+        <table class="sub-table" id="subTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Type</th>
+              <th>Department</th>
+              <th>Campus</th>
+              <th>HOD</th>
+              <th>Semester</th>
+              <th>Programs</th>
+              <th>Faculty Rows</th>
+              <th>Checklist</th>
+              <th>Submitted At</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in submissions %}
+            {% set chk = s.get('hodChecklist', {}) %}
+            {% set yes_count = chk.values()|selectattr('status','equalto','Yes')|list|length %}
+            {% set total_chk = chk|length or 27 %}
+            {% set pct = ((yes_count / total_chk * 100)|int) if total_chk else 0 %}
+            <tr
+              data-search="{{ s.identity.dept }} {{ s.identity.campus }} {{ s.identity.hodName }} {{ s.identity.hodEmail }} {{ s.identity.semester }} {{ s.form_type }}" data-dept="{{ s.identity.dept }}">
+              <td style="color:var(--ink3);font-weight:700;font-size:12px">{{ loop.index }}</td>
+              <td>
+                {% if s.form_type == 'closure' %}
+                  <span class="admin-badge" style="background: #e0f4f5; color: #0f6e74; margin-bottom:0;">Closure</span>
+                {% else %}
+                  <span class="admin-badge" style="background: #fef3e2; color: #c97820; margin-bottom:0;">Readiness</span>
+                {% endif %}
+              </td>
+              <td>
+                <div style="font-weight:700;color:var(--navy);font-size:13px">{{ s.identity.dept or '—' }}</div>
+                <div style="font-size:11.5px;color:var(--ink3)">A.Y. {{ s.identity.acYear or '—' }}</div>
+                {% if s.edit_request and s.edit_request.pending %}
+                <div
+                  style="margin-top:4px;font-size:11px;color:var(--danger);font-weight:700;background:#fde8e8;padding:2px 6px;border-radius:4px;display:inline-block"
+                  title="{{ s.edit_request.comment }}">Edit Requested</div>
+                {% endif %}
+              </td>
+              <td>
+                <span class="campus-badge {{ 'cb-blr' if s.identity.campus == 'Bangalore' else 'cb-kch' }}">
+                  {{ s.identity.campus or '—' }}
+                </span>
+              </td>
+              <td>
+                <div style="font-weight:600;font-size:13px">{{ s.identity.hodName or '—' }}</div>
+                <div style="font-size:11px;color:var(--ink3)">{{ s.identity.hodEmail or '' }}</div>
+              </td>
+              <td style="font-size:13px;font-weight:500">{{ s.identity.semester or '—' }}</td>
+              <td style="text-align:center;font-weight:700;color:var(--navy)">{{ s.programs|length }}</td>
+              <td style="text-align:center;font-weight:700;color:var(--navy)">{{ s.facultySummary|length }}</td>
+              <td>
+                <div style="font-size:11.5px;font-weight:700;color:var(--navy);margin-bottom:4px">{{ yes_count }}/{{
+                  total_chk }}</div>
+                <div class="checklist-bar">
+                  <div class="checklist-fill" style="width:{{ pct }}%"></div>
+                </div>
+              </td>
+              <td style="font-size:12px;color:var(--ink3);white-space:nowrap">
+                {{ s.timestamp[:10] if s.timestamp else '—' }}<br>
+                <span style="font-size:11px">{{ s.timestamp[11:19] if s.timestamp and s.timestamp|length > 10 else ''
+                  }}</span>
+              </td>
+              <td>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;max-width:140px">
+                  <button class="btn btn-primary btn-sm" onclick="openModal('{{ s._id }}')">View</button>
+                  <a href="/api/export/{{ s._id }}" class="btn btn-gold btn-sm">Excel</a>
+                  {% if s.edit_request and s.edit_request.pending %}
+                  <button class="btn btn-danger btn-sm" onclick="approveEdit('{{ s._id }}')"
+                    title="Reason: {{ s.edit_request.comment }}" style="flex:1">Approve Edit</button>
+                  {% endif %}
+                  <button class="btn btn-danger btn-sm" onclick="deleteSub('{{ s._id }}', this)">Del</button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="pag">
+        <span class="pag-info">Showing all {{ total }} submission(s)</span>
+        <a href="/admin/export-all" class="btn btn-gold">⬇ Export Full Excel</a>
+      </div>
+      {% else %}
+      <div class="no-data">
+        <span class="nd-icon">📭</span>
+        <h3>No Submissions Yet</h3>
+        <p>Departments haven't submitted their semester readiness forms yet.<br>Share the form link with HODs to get
+          started.</p>
+        <a href="/" class="btn btn-primary" style="margin-top:16px;text-decoration:none">→ Go to Form</a>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="table-card" style="margin-top:32px">
+      <div class="table-header">
+        <div>
+          <h2>Registered Users</h2>
+          <p>{{ users|length }} user(s) have registered on the portal</p>
+        </div>
+        <div class="search-bar">
+          <select id="userDeptFilter" onchange="filterUsersTable()" style="padding: 9px 14px; border: 2px solid var(--border); border-radius: var(--r2); font-size: 13px; outline: none; background: #fafbff; cursor: pointer;">
+            <option value="">All Departments</option>
+            {% for dept in departments %}
+            <option value="{{ dept }}">{{ dept }}</option>
+            {% endfor %}
+          </select>
+          <input type="text" id="searchUserInput" placeholder="🔍 Search Name, Email…" oninput="filterUsersTable()">
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="sub-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email ID</th>
+              <th>Latest Department</th>
+              <th>Registered At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
+            <tr class="user-tr" data-search="{{ u.name }} {{ u.email }} {{ u.latest_dept }}" data-dept="{{ u.latest_dept }}">
+              <td style="color:var(--ink3);font-weight:700;font-size:12px">{{ loop.index }}</td>
+              <td style="font-weight:700;color:var(--navy);font-size:13px">{{ u.name }}</td>
+              <td>{{ u.email }}</td>
+              <td style="font-weight:600">{{ u.latest_dept }}</td>
+              <td style="font-size:12px;color:var(--ink3)">{{ u.created_at[:10] if u.created_at else '—' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submission Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" id="modalContent">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Embedded submission data for modal -->
+  <script>
+    const SUBMISSIONS = {{ submissions | tojson }};
+    const HOD_SECTIONS = {{ hod_sections | tojson }};
+
+    function filterTable() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const d = document.getElementById('subDeptFilter').value;
+      document.querySelectorAll('#subTable tbody tr').forEach(tr => {
+        const t = (tr.dataset.search || '').toLowerCase();
+        const trDept = tr.dataset.dept || '';
+        const matchQ = t.includes(q);
+        const matchD = !d || trDept === d;
+        tr.style.display = (matchQ && matchD) ? '' : 'none';
+      });
+    }
+
+    function filterUsersTable() {
+      const q = document.getElementById('searchUserInput').value.toLowerCase();
+      const d = document.getElementById('userDeptFilter').value;
+      document.querySelectorAll('.user-tr').forEach(tr => {
+        const t = (tr.dataset.search || '').toLowerCase();
+        const trDept = tr.dataset.dept || '';
+        const matchQ = t.includes(q);
+        const matchD = !d || trDept === d;
+        tr.style.display = (matchQ && matchD) ? '' : 'none';
+      });
+    }
+
+    function openModal(id) {
+      const s = SUBMISSIONS.find(x => x._id === id);
+      if (!s) return;
+      const chk = s.hodChecklist || {};
+      const allItems = HOD_SECTIONS.flatMap(sec => sec.items);
+      const yes = Object.values(chk).filter(x => x.status === 'Yes').length;
+      const no = Object.values(chk).filter(x => x.status === 'No').length;
+
+      let facHtml = '';
+      if ((s.facultySummary || []).length) {
+        facHtml = s.facultySummary.map(f => `<div class="mod-row"><span class="mod-label">${f.name}</span><span class="mod-val">${f.course || '—'} (${f.code || '—'}) · TLEP: ${f.tlep || '—'} · LMS: ${f.lms || '—'}</span></div>`).join('');
+      } else {
+        facHtml = '<div style="color:#aaa;font-size:13px">No faculty data entered</div>';
+      }
+
+      let chkHtml = '<div class="chk-grid">';
+      allItems.forEach(item => {
+        const v = chk[item.id] || {};
+        const cls = v.status === 'Yes' ? 'ci-yes' : v.status === 'No' ? 'ci-no' : v.status === 'N/A' ? 'ci-na' : 'ci-blank';
+        const icon = v.status === 'Yes' ? '✓' : v.status === 'No' ? '✗' : v.status === 'N/A' ? 'N/A' : '—';
+        chkHtml += `<div class="chk-item ${cls}" title="${item.text}">${icon} ${item.id}. ${item.text.substring(0, 28)}…</div>`;
+      });
+      chkHtml += '</div>';
+
+      document.getElementById('modalBody').innerHTML = `
+    <h3>${s.identity.dept || 'Department Details'}</h3>
+    <div class="mod-section">
+      <h4>Identity</h4>
+      <div class="mod-row"><span class="mod-label">Campus</span><span class="mod-val">${s.identity.campus || '—'}</span></div>
+      <div class="mod-row"><span class="mod-label">HOD</span><span class="mod-val">${s.identity.hodName || '—'} · ${s.identity.hodEmail || '—'}</span></div>
+      <div class="mod-row"><span class="mod-label">Semester</span><span class="mod-val">${s.identity.semester || '—'} · A.Y. ${s.identity.acYear || '—'}</span></div>
+      <div class="mod-row"><span class="mod-label">Submitted</span><span class="mod-val">${s.timestamp ? s.timestamp.replace('T', ' ').substring(0, 19) : '—'}</span></div>
+    </div>
+    <div class="mod-section">
+      <h4>Snapshot</h4>
+      <div class="mod-row"><span class="mod-label">Programs</span><span class="mod-val">${s.snapshot?.programs || '—'}</span></div>
+      <div class="mod-row"><span class="mod-label">Courses</span><span class="mod-val">${s.snapshot?.courses || '—'}</span></div>
+      <div class="mod-row"><span class="mod-label">Students</span><span class="mod-val">${s.snapshot?.students || '—'}</span></div>
+      <div class="mod-row"><span class="mod-label">Faculty</span><span class="mod-val">${s.snapshot?.faculty || '—'} regular + ${s.snapshot?.adjunct || '0'} adjunct</span></div>
+    </div>
+    <div class="mod-section">
+      <h4>Faculty Summary (${s.facultySummary?.length || 0} rows)</h4>
+      ${facHtml}
+    </div>
+    <div class="mod-section">
+      <h4>HOD Checklist — ${yes}/27 Yes · ${no} Gaps</h4>
+      ${chkHtml}
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;flex-wrap:wrap">
+      <a href="/api/export/${s._id}" class="btn btn-gold">⬇ Download Excel</a>
+      <button class="btn btn-ghost" onclick="closeModal()">Close</button>
+    </div>`;
+      document.getElementById('modalOverlay').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+    }
+
+    function deleteSub(id, btn) {
+      if (!confirm('Delete this submission permanently?')) return;
+      fetch(`/admin/delete/${id}`, { method: 'POST' })
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok) {
+            btn.closest('tr').remove();
+            alert('Deleted.');
+          }
+        });
+    }
+
+    function approveEdit(id) {
+      if (!confirm('Approve edit access for this submission?')) return;
+      fetch(`/admin/approve-edit/${id}`, { method: 'POST' })
+        .then(r => r.json())
+        .then(res => {
+          if (res.ok) window.location.reload();
+          else alert('Failed to approve');
+        });
+    }
+
+    function saveSettings() {
+      const payload = {
+        readiness_enabled: document.getElementById('set_readiness_enabled').checked,
+        readiness_deadline: document.getElementById('set_readiness_deadline').value,
+        closure_enabled: document.getElementById('set_closure_enabled').checked,
+        closure_deadline: document.getElementById('set_closure_deadline').value
+      };
+      
+      fetch('/admin/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.ok) alert('Settings saved successfully.');
+        else alert('Failed to save settings.');
+      })
+      .catch(err => alert('Network error.'));
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  </script>
+</body>
+
+</html>
