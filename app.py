@@ -68,7 +68,7 @@ HOD_SECTIONS = [
         {"id": "3", "text": "Course matrix uploaded on ERP"},
         {"id": "4", "text": "Open Elective courses cross-checked with offering departments"},
         {"id": "5", "text": "Students given ≥ 1 week to choose electives after orientation"},
-        {"id": "6", "text": "Kochi / other campus stakeholders included in planning", "kochi": True},
+        {"id": "6", "text": "Kochi / Online / ODL / other campus stakeholders included in planning", "kochi": True},
     ]},
     {"title": "Section 2: Faculty Allocation & Workload", "items": [
         {"id": "7", "text": "All courses have faculty assigned"},

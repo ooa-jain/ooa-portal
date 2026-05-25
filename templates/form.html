@@ -1301,6 +1301,55 @@
       font-size: 20px;
       cursor: pointer;
     }
+
+    /* ─── Submissions Filter Tabs ─── */
+    .filter-section {
+      background: #f8fafc;
+      border: 1px solid #dde3f0;
+      border-radius: var(--r);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .filter-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--navy);
+      min-width: 130px;
+    }
+    .tab-btn {
+      background: #ffffff;
+      border: 1.5px solid #dde3f0;
+      border-radius: 99px;
+      padding: 6px 16px;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink2);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover {
+      border-color: var(--navy3);
+      color: var(--navy);
+      background: #f3f6fc;
+    }
+    .tab-btn.active {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(10, 37, 88, 0.15);
+    }
   </style>
 </head>
 
@@ -1346,6 +1395,25 @@
       </div>
       <button class="btn btn-primary" onclick="startNewForm()">＋ Start New Submission</button>
     </div>
+    <!-- Tab Filters for Submissions -->
+    <div class="filter-section">
+      <div class="filter-group">
+        <span class="filter-label">Academic Year:</span>
+        <button class="tab-btn active" onclick="filterAcYear('All', this)">All Years</button>
+        <button class="tab-btn" onclick="filterAcYear('2024-25', this)">2024-25</button>
+        <button class="tab-btn" onclick="filterAcYear('2025-26', this)">2025-26</button>
+        <button class="tab-btn" onclick="filterAcYear('2026-27', this)">2026-27</button>
+        <button class="tab-btn" onclick="filterAcYear('2027-28', this)">2027-28</button>
+        <button class="tab-btn" onclick="filterAcYear('2028-29', this)">2028-29</button>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Semester Type:</span>
+        <button class="tab-btn active" onclick="filterSem('All', this)">All Semesters</button>
+        <button class="tab-btn" onclick="filterSem('Even', this)">Even Semesters</button>
+        <button class="tab-btn" onclick="filterSem('Odd', this)">Odd Semesters</button>
+      </div>
+    </div>
+
     <div id="dashList">
       <div style="text-align: center; color: var(--ink3); padding: 40px;">Loading submissions...</div>
     </div>
@@ -1428,14 +1496,21 @@
           </div>
           <div class="field">
             <label>Academic Year <span class="req">*</span></label>
-            <input type="text" id="f_ac_year" placeholder="e.g. 2025-26">
+            <select id="f_ac_year">
+              <option value="">— Select Academic Year —</option>
+              <option value="2024-25">2024-25</option>
+              <option value="2025-26" selected>2025-26</option>
+              <option value="2026-27">2026-27</option>
+              <option value="2027-28">2027-28</option>
+              <option value="2028-29">2028-29</option>
+            </select>
           </div>
           <div class="field">
             <label>Submission Date</label>
             <input type="date" id="f_sub_date">
           </div>
           <div class="field">
-            <label>HOD Deadline</label>
+            <label>Last day of Submission by HoD</label>
             <input type="date" id="f_hod_deadline">
           </div>
         </div>
@@ -1762,45 +1837,96 @@
     }
 
     let submissionsCache = [];
+    let activeAcYearFilter = 'All';
+    let activeSemFilter = 'All';
 
-    if (USER) {
-      loadDashboard();
-      document.getElementById('f_hod_name').value = USER.name;
-      document.getElementById('f_hod_email').value = USER.email;
+    function filterAcYear(year, btn) {
+      activeAcYearFilter = year;
+      btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderSubmissions();
+    }
+
+    function filterSem(sem, btn) {
+      activeSemFilter = sem;
+      btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderSubmissions();
+    }
+
+    function renderSubmissions() {
+      const list = document.getElementById('dashList');
+      if (!submissionsCache || !submissionsCache.length) {
+        list.innerHTML = '<div style="text-align:center; padding: 40px; background: #fff; border-radius: 12px; border: 1px dashed #c8d2e8; color: var(--ink3);">No submissions found. Start a new one!</div>';
+        return;
+      }
+
+      const filtered = submissionsCache.filter(s => {
+        const identity = s.identity || {};
+        const acYear = identity.acYear || '';
+        const semester = (identity.semester || '').toLowerCase();
+
+        let matchYear = false;
+        if (activeAcYearFilter === 'All') {
+          matchYear = true;
+        } else {
+          matchYear = (acYear === activeAcYearFilter || acYear.includes(activeAcYearFilter));
+        }
+
+        let matchSem = false;
+        if (activeSemFilter === 'All') {
+          matchSem = true;
+        } else if (activeSemFilter === 'Even') {
+          matchSem = semester.includes('even');
+        } else if (activeSemFilter === 'Odd') {
+          matchSem = semester.includes('odd');
+        }
+
+        return matchYear && matchSem;
+      });
+
+      if (!filtered.length) {
+        list.innerHTML = '<div style="text-align:center; padding: 40px; background: #fff; border-radius: 12px; border: 1px dashed #c8d2e8; color: var(--ink3);">No submissions match the selected filters.</div>';
+        return;
+      }
+
+      list.innerHTML = filtered.map(s => {
+        const dt = new Date(s.timestamp).toLocaleDateString();
+        const isLocked = s.edit_count >= 2 && (!s.edit_request || s.edit_request.status !== 'approved');
+        const isPending = s.edit_request && s.edit_request.status === 'pending';
+
+        let rightAction = '';
+        if (isLocked) {
+          if (isPending) rightAction = `<button class="btn btn-ghost" disabled>Pending Admin</button>`;
+          else rightAction = `<button class="btn btn-ghost" onclick="requestEdit('${s._id}')">Request Edit</button>`;
+        } else {
+          rightAction = `<button class="btn btn-gold" onclick="editSubmission('${s._id}')">Edit</button>`;
+        }
+
+        return `<div class="dash-card">
+          <div class="dc-left">
+            <div class="dc-title">${s.identity?.dept || 'Draft Submission'}</div>
+            <div class="dc-sub">Submitted on ${dt} · ${s.identity?.semester || ''} · A.Y. ${s.identity?.acYear || ''} ${s.edit_count > 0 ? `(Edits: ${s.edit_count})` : ''}</div>
+          </div>
+          <div class="dc-right" style="display:flex; gap: 8px;">
+            <button class="btn btn-ghost" onclick="viewSubmission('${s._id}')">View</button>
+            <button class="btn btn-ghost" onclick="exportToPDF('${s._id}')" title="Export to PDF" style="font-size: 11.5px; padding: 6px 10px;">📄 PDF</button>
+            <button class="btn btn-ghost" onclick="exportToWord('${s._id}')" title="Export to Word" style="font-size: 11.5px; padding: 6px 10px;">📝 Word</button>
+            ${rightAction}
+          </div>
+        </div>`;
+      }).join('');
     }
 
     function loadDashboard() {
       fetch('/api/my-submissions?type=readiness').then(r => r.json()).then(res => {
-        const list = document.getElementById('dashList');
         if (!res.ok || !res.submissions || !res.submissions.length) {
-          list.innerHTML = '<div style="text-align:center; padding: 40px; background: #fff; border-radius: 12px; border: 1px dashed #c8d2e8; color: var(--ink3);">No submissions found. Start a new one!</div>';
+          submissionsCache = [];
+          renderSubmissions();
           return;
         }
         submissionsCache = res.submissions;
-        list.innerHTML = res.submissions.map(s => {
-          const dt = new Date(s.timestamp).toLocaleDateString();
-          const isLocked = s.edit_count >= 2 && (!s.edit_request || s.edit_request.status !== 'approved');
-          const isPending = s.edit_request && s.edit_request.status === 'pending';
-
-          let rightAction = '';
-          if (isLocked) {
-            if (isPending) rightAction = `<button class="btn btn-ghost" disabled>Pending Admin</button>`;
-            else rightAction = `<button class="btn btn-ghost" onclick="requestEdit('${s._id}')">Request Edit</button>`;
-          } else {
-            rightAction = `<button class="btn btn-gold" onclick="editSubmission('${s._id}')">Edit</button>`;
-          }
-
-          return `<div class="dash-card">
-            <div class="dc-left">
-              <div class="dc-title">${s.identity?.dept || 'Draft Submission'}</div>
-              <div class="dc-sub">Submitted on ${dt} · ${s.identity?.semester || ''} ${s.edit_count > 0 ? `(Edits: ${s.edit_count})` : ''}</div>
-            </div>
-            <div class="dc-right">
-              <button class="btn btn-ghost" onclick="viewSubmission('${s._id}')">View</button>
-              ${rightAction}
-            </div>
-          </div>`;
-        }).join('');
+        renderSubmissions();
       });
     }
 
@@ -1821,11 +1947,116 @@
       });
     }
 
+    function clearForm() {
+      currentSubmissionId = null;
+      setVal('f_campus', '');
+      setVal('f_dept', USER ? USER.department || '' : '');
+      setVal('f_hod_name', USER ? USER.name || '' : '');
+      setVal('f_hod_email', USER ? USER.email || '' : '');
+      setVal('f_semester', 'Even 2025-26');
+      setVal('f_ac_year', '2025-26');
+      document.getElementById('f_sub_date').value = new Date().toISOString().split('T')[0];
+      setVal('f_hod_deadline', '');
+
+      setVal('s_programs', '');
+      setVal('s_courses', '');
+      setVal('s_students', '');
+      setVal('s_faculty', '');
+      setVal('s_adjunct', '');
+      setVal('s_labs', '');
+      setVal('s_electives', '');
+      setVal('s_new_courses', '');
+
+      setVal('rs_fac', '');
+      setVal('rs_fac_pend', '');
+      setVal('rs_fac_note', '');
+      setVal('rs_hod', '');
+      setVal('rs_hod_pend', '');
+      setVal('rs_hod_note', '');
+      setVal('rs_sum', '');
+      setVal('rs_sum_pend', '');
+      setVal('rs_sum_note', '');
+
+      ['rs_fac', 'rs_hod', 'rs_sum'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) styleChkSel(el);
+      });
+
+      document.getElementById('progBody').innerHTML = '';
+      progCount = 0;
+      addProgRow(); addProgRow();
+
+      document.getElementById('facBody').innerHTML = '';
+      facCount = 0;
+      document.getElementById('uploadResult').style.display = 'none';
+      document.getElementById('excelFile').value = '';
+
+      HOD_SECTIONS.forEach(sec => sec.items.forEach(item => {
+        const sel = document.getElementById('chk_' + item.id);
+        if (sel) { sel.value = ''; styleChkSel(sel); }
+        const rem = document.getElementById('rem_' + item.id);
+        if (rem) rem.value = '';
+      }));
+    }
+
     function startNewForm() {
       document.getElementById('dashView').style.display = 'none';
       document.getElementById('formView').style.display = 'block';
       document.getElementById('mainProgBar').style.display = 'flex';
-      currentSubmissionId = null;
+      
+      clearForm();
+
+      if (submissionsCache && submissionsCache.length > 0) {
+        const d = submissionsCache[0];
+        if (confirm("Would you like to auto-fill department details, snapshot numbers, programs, and faculty records from your last submission?")) {
+          currentSubmissionId = null;
+          
+          if (d.identity) {
+            setVal('f_campus', d.identity.campus);
+            setVal('f_dept', d.identity.dept);
+            setVal('f_hod_name', d.identity.hodName);
+            setVal('f_hod_email', d.identity.hodEmail);
+            setVal('f_semester', d.identity.semester);
+            setVal('f_ac_year', d.identity.acYear);
+          }
+          
+          if (d.snapshot) {
+            setVal('s_programs', d.snapshot.programs);
+            setVal('s_courses', d.snapshot.courses);
+            setVal('s_students', d.snapshot.students);
+            setVal('s_faculty', d.snapshot.faculty);
+            setVal('s_adjunct', d.snapshot.adjunct);
+            setVal('s_labs', d.snapshot.labs);
+            setVal('s_electives', d.snapshot.electives);
+            setVal('s_new_courses', d.snapshot.newCourses);
+          }
+          
+          if (d.programs && d.programs.length > 0) {
+            document.getElementById('progBody').innerHTML = '';
+            progCount = 0;
+            d.programs.forEach(p => {
+              addProgRow();
+              const trs = document.querySelectorAll('#progBody tr');
+              const lastTr = trs[trs.length - 1];
+              lastTr.querySelector('.prog-name').value = p.name || '';
+              lastTr.querySelector('.prog-courses').value = p.courses || '';
+              lastTr.querySelector('.prog-students').value = p.students || '';
+              lastTr.querySelector('.prog-faculty').value = p.faculty || '';
+              lastTr.querySelector('.prog-coord').value = p.coord || '';
+              lastTr.querySelector('.prog-coord-email').value = p.coordEmail || '';
+            });
+            updateProgTotals();
+          }
+          
+          if (d.facultySummary && d.facultySummary.length > 0) {
+            document.getElementById('facBody').innerHTML = '';
+            facCount = 0;
+            d.facultySummary.forEach(r => addFacRow(r));
+          }
+          
+          showToast('Form auto-filled from your last submission!');
+        }
+      }
     }
 
     function editSubmission(id) {
@@ -2187,7 +2418,14 @@
       const noN = vals.filter(x => x.status === 'No').length;
       const allItems = HOD_SECTIONS.flatMap(s => s.items);
 
+      const downloadExcelBtn = d._id ? `<a class="btn btn-ghost" href="/api/export/${d._id}" style="font-size: 12px; padding: 6px 12px; text-decoration: none;">📊 Export Excel</a>` : '';
+
       return `
+  <div style="display: flex; gap: 8px; margin-bottom: 20px;" class="no-print">
+    <button class="btn btn-primary" onclick="exportToPDF('${d._id || ''}')" style="font-size: 12px; padding: 6px 12px;">📄 Print / Save PDF</button>
+    <button class="btn btn-gold" onclick="exportToWord('${d._id || ''}')" style="font-size: 12px; padding: 6px 12px;">📝 Export Word</button>
+    ${downloadExcelBtn}
+  </div>
   <div class="rev-block">
     <div class="rev-header">Department Identity<span class="rev-badge">${d.identity?.campus || '—'}</span></div>
     <div class="rev-body">
@@ -2227,6 +2465,453 @@
       ${noN > 0 ? `<div class="gap-list"><strong style="color:var(--danger)">⚠ ${noN} item(s) marked No:</strong><br>${allItems.filter(i => d.hodChecklist && d.hodChecklist[i.id]?.status === 'No').map(i => `<div class="gap-item">• ${i.id}. ${i.text}</div>`).join('')}</div>` : '<span style="color:var(--success)">✓ No items marked No — checklist looks complete</span>'}
     </div>
   </div>`;
+    }
+
+    function getSubmissionData(id) {
+      if (!id) {
+        return collectData();
+      }
+      return submissionsCache.find(x => x._id === id) || collectData();
+    }
+
+    function exportToPDF(id) {
+      const d = getSubmissionData(id);
+      const printWindow = window.open('', '_blank');
+      
+      let progRows = '<tr><td colspan="7" style="text-align:center;color:#64748b;">No program data available</td></tr>';
+      if (d.programs && d.programs.length) {
+        progRows = d.programs.map((p, idx) => `
+          <tr>
+            <td style="text-align:center;">${idx + 1}</td>
+            <td><strong>${p.name || ''}</strong></td>
+            <td style="text-align:center;">${p.courses || 0}</td>
+            <td style="text-align:center;">${p.students || 0}</td>
+            <td style="text-align:center;">${p.faculty || 0}</td>
+            <td>${p.coord || '—'}</td>
+            <td>${p.coordEmail || '—'}</td>
+          </tr>
+        `).join('');
+      }
+
+      let facRows = '<tr><td colspan="10" style="text-align:center;color:#64748b;">No faculty data available</td></tr>';
+      if (d.facultySummary && d.facultySummary.length) {
+        facRows = d.facultySummary.map((f, idx) => `
+          <tr>
+            <td style="text-align:center;">${idx + 1}</td>
+            <td><strong>${f.name || ''}</strong></td>
+            <td>${f.course || ''}</td>
+            <td style="text-align:center;">${f.code || ''}</td>
+            <td style="text-align:center;"><span class="status-${(f.tlep || '').toLowerCase()}">${f.tlep || '—'}</span></td>
+            <td style="text-align:center;"><span class="status-${(f.audited || '').toLowerCase()}">${f.audited || '—'}</span></td>
+            <td style="text-align:center;"><span class="status-${(f.erp || '').toLowerCase()}">${f.erp || '—'}</span></td>
+            <td style="text-align:center;"><span class="status-${(f.lms || '').toLowerCase()}">${f.lms || '—'}</span></td>
+            <td>${f.program || '—'}</td>
+            <td>${f.remarks || f.remark || '—'}</td>
+          </tr>
+        `).join('');
+      }
+
+      let chkRows = '';
+      HOD_SECTIONS.forEach(s => {
+        chkRows += `
+          <tr class="section-row">
+            <td colspan="4" style="background:#f1f5f9; font-weight:700; color:#0a2558; font-size:12.5px; border: 1px solid #cbd5e1; padding:8px 10px;">${s.title}</td>
+          </tr>
+        `;
+        s.items.forEach(item => {
+          const chkItem = d.hodChecklist ? d.hodChecklist[item.id] : null;
+          const status = chkItem?.status || '—';
+          const remark = chkItem?.remark || '—';
+          chkRows += `
+            <tr>
+              <td style="text-align:center; font-weight:700; width:40px;">${item.id}</td>
+              <td>${item.text}</td>
+              <td style="text-align:center; width:100px;"><span class="status-${status.toLowerCase()}">${status}</span></td>
+              <td style="word-break: break-all;">${remark}</td>
+            </tr>
+          `;
+        });
+      });
+
+      const html = `
+        <html>
+          <head>
+            <title>Semester Readiness Report - ${d.identity?.dept || ''}</title>
+            <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+            <style>
+              body {
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                color: #111827;
+                padding: 40px;
+                max-width: 900px;
+                margin: 0 auto;
+                background: #fff;
+              }
+              .header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 3px solid #0a2558;
+                padding-bottom: 20px;
+                margin-bottom: 30px;
+              }
+              .logo-text h1 {
+                font-size: 24px;
+                color: #0a2558;
+                margin: 0;
+              }
+              .logo-text p {
+                font-size: 11px;
+                color: #f2a900;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                margin: 5px 0 0 0;
+                font-weight: 700;
+              }
+              .meta-info {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                margin-bottom: 30px;
+                background: #f8fafc;
+                padding: 20px;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+              }
+              .meta-item {
+                font-size: 13.5px;
+              }
+              .meta-item strong {
+                color: #0a2558;
+              }
+              .section-title {
+                font-size: 15px;
+                color: #0a2558;
+                border-bottom: 2.5px solid #e2e8f0;
+                padding-bottom: 8px;
+                margin-top: 35px;
+                margin-bottom: 15px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                font-weight: 800;
+              }
+              .metrics-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 12px;
+                margin-bottom: 20px;
+              }
+              .metric-card {
+                background: #f8fafc;
+                padding: 14px;
+                border-radius: 8px;
+                text-align: center;
+                border: 1px solid #e2e8f0;
+              }
+              .metric-val {
+                font-size: 20px;
+                font-weight: 800;
+                color: #0a2558;
+              }
+              .metric-label {
+                font-size: 11px;
+                color: #64748b;
+                margin-top: 4px;
+                text-transform: uppercase;
+                font-weight: 600;
+              }
+              table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+                font-size: 12px;
+              }
+              th {
+                background-color: #0a2558;
+                color: #ffffff;
+                padding: 9px 10px;
+                text-align: left;
+                font-weight: 700;
+                border: 1px solid #cbd5e1;
+                text-transform: uppercase;
+                font-size: 11px;
+                letter-spacing: 0.5px;
+              }
+              td {
+                padding: 8px 10px;
+                border: 1px solid #cbd5e1;
+                vertical-align: middle;
+              }
+              .status-yes { color: #15803d; font-weight: 700; }
+              .status-no { color: #b91c1c; font-weight: 700; }
+              .status-pending { color: #a16207; font-weight: 700; }
+              
+              @media print {
+                body {
+                  padding: 0;
+                }
+                .no-print {
+                  display: none;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="no-print" style="background:#f1f5f9; padding:15px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:25px; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:13.5px; font-weight:600; color:#334155;">📄 Print Preview - Select "Save as PDF" as your printer destination to download as PDF.</span>
+              <button onclick="window.print()" style="background:#0a2558; color:#fff; border:none; padding:10px 20px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Plus Jakarta Sans', sans-serif; font-size:13px; transition: background 0.2s;">Print / Save as PDF</button>
+            </div>
+            
+            <div class="header">
+              <div class="logo-text">
+                <h1>JAIN (Deemed-to-be University)</h1>
+                <p>Office of Academics — Semester Readiness Report</p>
+              </div>
+              <div style="text-align: right; font-size: 12.5px; color: #475569; line-height: 1.4;">
+                <strong>Status:</strong> Active Submission<br>
+                <strong>Date:</strong> ${new Date(d.timestamp || new Date()).toLocaleDateString()}
+              </div>
+            </div>
+
+            <div class="meta-info">
+              <div class="meta-item"><strong>Campus:</strong> ${d.identity?.campus || '—'}</div>
+              <div class="meta-item"><strong>Department:</strong> ${d.identity?.dept || '—'}</div>
+              <div class="meta-item"><strong>HOD Name:</strong> ${d.identity?.hodName || '—'}</div>
+              <div class="meta-item"><strong>HOD Email:</strong> ${d.identity?.hodEmail || '—'}</div>
+              <div class="meta-item"><strong>Semester:</strong> ${d.identity?.semester || '—'}</div>
+              <div class="meta-item"><strong>Academic Year:</strong> ${d.identity?.acYear || '—'}</div>
+              <div class="meta-item"><strong>Submission Date:</strong> ${d.identity?.subDate || '—'}</div>
+              <div class="meta-item"><strong>Last day of Submission by HoD:</strong> ${d.identity?.hodDeadline || '—'}</div>
+            </div>
+
+            <div class="section-title">Department Snapshot</div>
+            <div class="metrics-grid">
+              <div class="metric-card"><div class="metric-val">${d.snapshot?.programs || 0}</div><div class="metric-label">Programs</div></div>
+              <div class="metric-card"><div class="metric-val">${d.snapshot?.courses || 0}</div><div class="metric-label">Courses</div></div>
+              <div class="metric-card"><div class="metric-val">${d.snapshot?.students || 0}</div><div class="metric-label">Students</div></div>
+              <div class="metric-card"><div class="metric-val">${d.snapshot?.faculty || 0}</div><div class="metric-label">Regular Faculty</div></div>
+            </div>
+
+            <div class="section-title">Program-wise Breakdown</div>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 40px; text-align:center;">#</th>
+                  <th>Program Name</th>
+                  <th style="width: 80px; text-align:center;">Courses</th>
+                  <th style="width: 80px; text-align:center;">Students</th>
+                  <th style="width: 80px; text-align:center;">Faculty</th>
+                  <th>Coordinator</th>
+                  <th>Coordinator Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${progRows}
+              </tbody>
+            </table>
+
+            <div class="section-title">Faculty Readiness Summary</div>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 40px; text-align:center;">#</th>
+                  <th>Faculty Name</th>
+                  <th>Course Name</th>
+                  <th>Code</th>
+                  <th style="text-align:center;">TLEP</th>
+                  <th style="text-align:center;">Audited</th>
+                  <th style="text-align:center;">ERP</th>
+                  <th style="text-align:center;">LMS</th>
+                  <th>Program</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${facRows}
+              </tbody>
+            </table>
+
+            <div class="section-title">27-Point HOD Checklist</div>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 40px; text-align:center;">#</th>
+                  <th>Checklist Item</th>
+                  <th style="width: 100px; text-align:center;">Status</th>
+                  <th>Remarks / Links</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${chkRows}
+              </tbody>
+            </table>
+          </body>
+        </html>
+      `;
+      
+      printWindow.document.write(html);
+      printWindow.document.close();
+    }
+
+    function exportToWord(id) {
+      const d = getSubmissionData(id);
+      
+      let progRows = '<tr><td colspan="7" style="text-align:center;">No program data available</td></tr>';
+      if (d.programs && d.programs.length) {
+        progRows = d.programs.map((p, idx) => `
+          <tr>
+            <td style="text-align:center;border:1px solid #ddd;padding:6px;">${idx + 1}</td>
+            <td style="border:1px solid #ddd;padding:6px;"><b>${p.name || ''}</b></td>
+            <td style="text-align:center;border:1px solid #ddd;padding:6px;">${p.courses || 0}</td>
+            <td style="text-align:center;border:1px solid #ddd;padding:6px;">${p.students || 0}</td>
+            <td style="text-align:center;border:1px solid #ddd;padding:6px;">${p.faculty || 0}</td>
+            <td style="border:1px solid #ddd;padding:6px;">${p.coord || '—'}</td>
+            <td style="border:1px solid #ddd;padding:6px;">${p.coordEmail || '—'}</td>
+          </tr>
+        `).join('');
+      }
+
+      let facRows = '<tr><td colspan="10" style="text-align:center;">No faculty data available</td></tr>';
+      if (d.facultySummary && d.facultySummary.length) {
+        facRows = d.facultySummary.map((f, idx) => `
+          <tr>
+            <td style="text-align:center;border:1px solid #ddd;padding:6px;">${idx + 1}</td>
+            <td style="border:1px solid #ddd;padding:6px;"><b>${f.name || ''}</b></td>
+            <td style="border:1px solid #ddd;padding:6px;">${f.course || ''}</td>
+            <td style="text-align:center;border:1px solid #ddd;padding:6px;">${f.code || ''}</td>
+            <td style="text-align:center;border:1px solid #ddd;padding:6px;">${f.tlep || '—'}</td>
+            <td style="text-align:center;border:1px solid #ddd;padding:6px;">${f.audited || '—'}</td>
+            <td style="text-align:center;border:1px solid #ddd;padding:6px;">${f.erp || '—'}</td>
+            <td style="text-align:center;border:1px solid #ddd;padding:6px;">${f.lms || '—'}</td>
+            <td style="border:1px solid #ddd;padding:6px;">${f.program || '—'}</td>
+            <td style="border:1px solid #ddd;padding:6px;">${f.remarks || f.remark || '—'}</td>
+          </tr>
+        `).join('');
+      }
+
+      let chkRows = '';
+      HOD_SECTIONS.forEach(s => {
+        chkRows += `
+          <tr>
+            <td colspan="4" style="background:#f1f5f9;font-weight:bold;color:#0a2558;border:1px solid #ddd;padding:8px;">${s.title}</td>
+          </tr>
+        `;
+        s.items.forEach(item => {
+          const chkItem = d.hodChecklist ? d.hodChecklist[item.id] : null;
+          const status = chkItem?.status || '—';
+          const remark = chkItem?.remark || '—';
+          chkRows += `
+            <tr>
+              <td style="text-align:center;font-weight:bold;border:1px solid #ddd;padding:6px;">${item.id}</td>
+              <td style="border:1px solid #ddd;padding:6px;">${item.text}</td>
+              <td style="text-align:center;border:1px solid #ddd;padding:6px;"><b>${status}</b></td>
+              <td style="border:1px solid #ddd;padding:6px;">${remark}</td>
+            </tr>
+          `;
+        });
+      });
+
+      const body = `
+        <div style="font-family:Calibri,Arial,sans-serif;color:#111827;padding:20px;">
+          <h1 style="color:#0a2558;font-size:22px;border-bottom:2px solid #0a2558;padding-bottom:5px;margin-bottom:5px;">JAIN (Deemed-to-be University)</h1>
+          <p style="color:#f2a900;text-transform:uppercase;font-size:11px;font-weight:bold;margin:0 0 20px 0;">Office of Academics — Semester Readiness Report</p>
+          
+          <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+            <tr>
+              <td style="width:50%;padding:6px;border:1px solid #ddd;"><b>Campus:</b> ${d.identity?.campus || '—'}</td>
+              <td style="width:50%;padding:6px;border:1px solid #ddd;"><b>Department:</b> ${d.identity?.dept || '—'}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px;border:1px solid #ddd;"><b>HOD Name:</b> ${d.identity?.hodName || '—'}</td>
+              <td style="padding:6px;border:1px solid #ddd;"><b>HOD Email:</b> ${d.identity?.hodEmail || '—'}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px;border:1px solid #ddd;"><b>Semester:</b> ${d.identity?.semester || '—'}</td>
+              <td style="padding:6px;border:1px solid #ddd;"><b>Academic Year:</b> ${d.identity?.acYear || '—'}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px;border:1px solid #ddd;"><b>Submission Date:</b> ${d.identity?.subDate || '—'}</td>
+              <td style="padding:6px;border:1px solid #ddd;"><b>Last day of Submission by HoD:</b> ${d.identity?.hodDeadline || '—'}</td>
+            </tr>
+          </table>
+
+          <h2 style="color:#0a2558;font-size:15px;border-bottom:1.5px solid #ddd;padding-bottom:4px;margin-top:20px;">Department Snapshot</h2>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+            <tr style="background:#f8fafc;">
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;">Programs</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;">Courses</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;">Students</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;">Regular Faculty</th>
+            </tr>
+            <tr>
+              <td style="border:1px solid #ddd;padding:6px;text-align:center;font-size:16px;font-weight:bold;">${d.snapshot?.programs || 0}</td>
+              <td style="border:1px solid #ddd;padding:6px;text-align:center;font-size:16px;font-weight:bold;">${d.snapshot?.courses || 0}</td>
+              <td style="border:1px solid #ddd;padding:6px;text-align:center;font-size:16px;font-weight:bold;">${d.snapshot?.students || 0}</td>
+              <td style="border:1px solid #ddd;padding:6px;text-align:center;font-size:16px;font-weight:bold;">${d.snapshot?.faculty || 0}</td>
+            </tr>
+          </table>
+
+          <h2 style="color:#0a2558;font-size:15px;border-bottom:1.5px solid #ddd;padding-bottom:4px;margin-top:20px;">Program-wise Breakdown</h2>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+            <tr style="background:#0a2558;color:#fff;">
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;">#</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:left;">Program Name</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;">Courses</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;">Students</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;">Faculty</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:left;">Coordinator</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:left;">Email</th>
+            </tr>
+            ${progRows}
+          </table>
+
+          <h2 style="color:#0a2558;font-size:15px;border-bottom:1.5px solid #ddd;padding-bottom:4px;margin-top:20px;">Faculty Readiness Summary</h2>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+            <tr style="background:#0a2558;color:#fff;">
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;">#</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:left;">Faculty Name</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:left;">Course Name</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;">Code</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;">TLEP</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;">Audited</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;">ERP</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;">LMS</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:left;">Program</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:left;">Remarks</th>
+            </tr>
+            ${facRows}
+          </table>
+
+          <h2 style="color:#0a2558;font-size:15px;border-bottom:1.5px solid #ddd;padding-bottom:4px;margin-top:20px;">27-Point HOD Checklist</h2>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+            <tr style="background:#0a2558;color:#fff;">
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;width:40px;">#</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:left;">Checklist Item</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:center;width:80px;">Status</th>
+              <th style="border:1px solid #ddd;padding:6px;text-align:left;">Remarks / Links</th>
+            </tr>
+            ${chkRows}
+          </table>
+        </div>
+      `;
+
+      const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
+            "xmlns:w='urn:schemas-microsoft-com:office:word' " +
+            "xmlns='http://www.w3.org/TR/REC-html40'>" +
+            "<head><meta charset='utf-8'><title>Semester Readiness Report</title></head><body>" + body + "</body></html>";
+
+      const blob = new Blob(['\ufeff' + header], {
+        type: 'application/msword'
+      });
+      
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Semester_Readiness_${d.identity?.dept || 'Report'}.doc`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast('Word export downloaded successfully!');
     }
 
     // ─── Submit ───
@@ -2294,6 +2979,14 @@
     buildHodChecklist();
     addProgRow(); addProgRow();
     document.getElementById('f_sub_date').value = new Date().toISOString().split('T')[0];
+
+    if (USER) {
+      loadDashboard();
+      const nameEl = document.getElementById('f_hod_name');
+      if (nameEl) nameEl.value = USER.name || '';
+      const emailEl = document.getElementById('f_hod_email');
+      if (emailEl) emailEl.value = USER.email || '';
+    }
   </script>
 </body>
 
